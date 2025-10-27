@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>洞穴</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
 
 body {
+    touch-action: manipulation; /* 阻止双击缩放 */
+
     margin: 0;
     font-family: 'Noto Serif SC', serif;
     background: radial-gradient(circle at center, #3b2f1a 0%, #1e1407 80%);
@@ -20,6 +24,10 @@ body {
     justify-content: flex-start;
 
     font-size: 19px; /* 改成你想要的大小 */
+}
+
+html, body {
+    touch-action: manipulation;
 }
 
 .story-section {
