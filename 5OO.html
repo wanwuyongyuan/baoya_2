@@ -393,18 +393,21 @@ observer.observe(chatBody, {childList:true, subtree:true});
 
 <style>
 /* 邮件预览弹窗 */
+/* 邮件预览 */
 #email-preview {
+  display: none;
   position: fixed;
-  right: 20px;
-  bottom: 60px;
-  width: 320px;
+  right: 5%;
+  bottom: 50px;
+  width: 90%;        /* 宽度自适应屏幕 */
+  max-width: 400px;  /* 最大宽度 */
   background: #fff;
   border: 2px solid #3c2814;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   padding: 12px;
   font-size: 14px;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   z-index: 10000;
 }
 
@@ -412,52 +415,31 @@ observer.observe(chatBody, {childList:true, subtree:true});
 #email-full {
   display: none;
   position: fixed;
-  right: 20px;
-  bottom: 60px;
-  width: 360px;
-  max-height: 70vh;
-  overflow-y: auto;
+  right: 5%;
+  bottom: 50px;
+  width: 90%;          /* 宽度自适应屏幕 */
+  max-width: 480px;     /* 最大宽度 */
+  max-height: 80vh;     /* 高度限制 */
+  overflow-y: auto;     /* 内容超出可滚动 */
   background: #fff;
   border: 2px solid #3c2814;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   padding: 16px;
   font-size: 14px;
   z-index: 10001;
 }
-#email-full button {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: #d8b77a;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-#email-full button:hover {
-  background: #c9a967;
+
+/* 手机屏幕优化 */
+@media screen and (max-width: 480px) {
+  #email-preview, #email-full {
+    width: 90%;           /* 宽度占屏幕90% */
+    right: 5%;            /* 保证左右边距 */
+    bottom: 50px;         /* 底部距离 */
+    font-size: 13px;      /* 字号略小 */
+  }
 }
 
-#email-preview {
-  display: none; /* 默认隐藏，3秒后才显示 */
-  position: fixed;
-  right: 20px;
-  bottom: 60px;
-  width: 400px; /* 可以调大 */
-  background: #fff;
-  border: 2px solid #3c2814;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  padding: 12px;
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 10000;
-}
-#email-full {
-  width: 480px;  /* 调大宽度 */
-  max-height: 80vh; /* 高度限制为屏幕高度80% */
-  overflow-y: auto;
-}
+
 </style>
 
 <script>
