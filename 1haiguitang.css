@@ -54,7 +54,7 @@ body {
 }
 
 .soup-top p.question {
-    font-size: 1.1em;
+    font-size: 1.0em;
     margin-top: 15px;
     color: #5a2d2d;
 }
@@ -117,7 +117,7 @@ body {
     max-width: 90%;
     z-index: 1000;
     text-align: center;
-    font-size: 1.1em;
+    font-size: 1.3em;
 }
 
 #answer-layer button {
@@ -235,7 +235,7 @@ body {
 }
 .start-button {
     font-family: 'Noto Serif SC', serif;
-    font-size: 1.2em;
+    font-size: 1.3em;
     padding: 15px 30px;
     background: #8b4513;
     color: #f4e4bc;
