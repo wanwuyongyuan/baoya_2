@@ -94,41 +94,40 @@ body, .story-section, .highlight {
 
 
 <script>
+   const trigger = document.getElementById('trigger');
 const story2 = document.getElementById('story2');
 const viewNotebook = document.getElementById('viewNotebook');
-const trigger = document.getElementById('trigger');
+
 let clickCount = 0;
 const maxClicks = 15;
 
-// 点击高亮文字触发小游戏
-function startMiniGame() {
+// 高亮文字点击或触摸触发小游戏
+function startMiniGame(e) {
+    e.preventDefault(); // 阻止默认行为
     alert('请快速点击屏幕！');
 
-    function handleScreenClick(e) {
+    function handleScreenClick(ev) {
         clickCount++;
         if (clickCount >= maxClicks) {
             // 移除监听
             window.removeEventListener('click', handleScreenClick);
             window.removeEventListener('touchstart', handleScreenClick);
 
-            // 显示第二段剧情和查看日记本文字
+            // 显示第二段剧情和查看日记按钮
             document.getElementById('story1').style.display = 'none';
             story2.style.display = 'block';
             viewNotebook.style.display = 'inline';
         }
     }
 
-    // 手机/PC通用事件
-    window.addEventListener('click', handleScreenClick, {passive: false});
-    window.addEventListener('touchstart', handleScreenClick, {passive: false});
+    // 同时监听 PC 和移动端
+    window.addEventListener('click', handleScreenClick, {passive: true});
+    window.addEventListener('touchstart', handleScreenClick, {passive: true});
 }
 
-// 使用 touchstart + click 都可触发
+// 绑定 trigger 的点击和触摸事件
 trigger.addEventListener('click', startMiniGame);
-trigger.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // 防止滚动干扰
-    startMiniGame();
-});
+trigger.addEventListener('touchstart', startMiniGame);
 
 </script>
 
