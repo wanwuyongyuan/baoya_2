@@ -12,7 +12,7 @@
 body {
   margin: 0;
   font-family: 'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
-  background: #f2f2f7; /* 苹果备忘录背景灰色 */
+  background: #f2f2f7;
   color: #1c1c1e;
   height: 100vh;
   display: flex;
@@ -27,11 +27,12 @@ body {
 /* 左侧标题栏 */
 #sidebar {
   width: 200px;
-  background: #f2f2f7; /* 浅灰色 */
-  border-right: 1px solid #d0d0d0; /* 淡灰边框 */
+  background: #f2f2f7;
+  border-right: 1px solid #d0d0d0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  transition: width 0.3s;
 }
 
 .note-title-item {
@@ -41,10 +42,10 @@ body {
   transition: background 0.2s;
 }
 .note-title-item:hover {
-  background: #e0e0e5; /* 悬停颜色略深 */
+  background: #e0e0e5;
 }
 .note-title-item.active {
-  background: #ffffff; /* 当前选中白色 */
+  background: #ffffff;
   font-weight: 600;
 }
 
@@ -53,20 +54,58 @@ body {
   flex: 1;
   padding: 24px 30px;
   overflow-y: auto;
-  background: #ffffff; /* 白色内容区 */
+  background: #ffffff;
   white-space: pre-wrap;
   line-height: 1.6;
   font-size: 16px;
 }
 
-/* 备忘录标题在内容区 */
 .note-content-title {
   font-weight: 700;
   font-size: 20px;
   margin-bottom: 12px;
 }
 
+/* 响应式优化：屏幕小于600px */
+@media screen and (max-width: 600px) {
+  #sidebar {
+    width: 80px; /* 左栏变窄 */
+    font-size: 0.9em;
+  }
+  .note-title-item {
+    padding: 10px 8px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #note-content {
+    padding: 15px 12px;
+    font-size: 1em;
+  }
+}
+
+/* 更小屏幕：可以折叠左栏 */
+@media screen and (max-width: 400px) {
+  #container {
+    flex-direction: column;
+  }
+  #sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #d0d0d0;
+  }
+  .note-title-item {
+    flex: 0 0 auto;
+    border-bottom: none;
+    border-right: 1px solid #dcdce0;
+  }
+}
 </style>
+
 </head>
 
 <body>
