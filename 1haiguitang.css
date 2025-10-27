@@ -13,15 +13,16 @@ body {
     padding: 20px;
 }
 
+/* 汤面容器 */
 .soup-top {
-    background: #f4e4bc; /* 浅色背景 */
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(139,69,19,0.2);
-    max-width: 800px;
+    background: #f4e4bc; 
+    padding: 50px 60px; /* 上下50px，左右60px */
+    border-radius: 20px; 
+    box-shadow: 0 0 25px rgba(139,69,19,0.25); 
+    max-width: 900px; 
     margin: 100px auto;
     text-align: center;
-    color: #4a3219; /* 深色文字 */
+    color: #4a3219; 
     position: relative;
     background-image: 
         repeating-linear-gradient(45deg, 
@@ -31,34 +32,65 @@ body {
             rgba(139,69,19,0.03) 4px);
 }
 
-/* 汤面和问题的样式 */
-.soup-top p {
-    margin: 15px 0;
-    font-size: 1.6em;
+/* 汤面容器 */
+.soup-top {
+    background: #f4e4bc; 
+    padding: 40px 50px;  /* 上下40px，左右50px */
+    border-radius: 15px; 
+    box-shadow: 0 0 20px rgba(139,69,19,0.2); 
+    max-width: 800px; 
+    margin: 80px auto;
+    text-align: center;
+    color: #4a3219; 
+    position: relative;
+    font-size: 1em; /* 正文适中 */
+    line-height: 1.5; 
+    background-image: 
+        repeating-linear-gradient(45deg, 
+            transparent, 
+            transparent 2px, 
+            rgba(139,69,19,0.03) 2px, 
+            rgba(139,69,19,0.03) 4px);
+}
+
+.soup-top {
+    background: #f4e4bc;
+    padding: 40px 50px;        /* 稳定容器大小 */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(139,69,19,0.2);
+    max-width: 850px;          /* 扩大宽度，防止溢出 */
+    margin: 80px auto;
+    text-align: center;
+    color: #4a3219;
+    font-size: 1.3em;          /* 字号适中，不要太大 */
     line-height: 1.6;
 }
 
-.soup-top p.hint {
-    font-size: 1em;
-    color: #8b4513;
-    font-style: italic;
-    margin-top: 20px;
+.soup-top p {
+    margin: 15px 0;
+    word-break: break-word;    /* 防止文字溢出 */
 }
 
-/* 汤面和问题中的关键词 */
-.soup-top strong {
-    font-size: 1.1em;
+.soup-top p.question {
+    font-size: 1.1em;          /* 问题文字略小于正文，仍可读 */
+    margin-top: 25px;
+    color: #5a2d2d;
+}
+
+.soup-top p .keywords strong {
+    font-size: 1.4em;          /* 关键词略大醒目 */
     font-weight: 700;
-    color: #8b4513;
     cursor: pointer;
-    padding: 0 4px;
+    padding: 0 3px;
     transition: all 0.3s ease;
 }
 
-.soup-top strong:hover {
+.soup-top p .keywords strong:hover {
+    transform: scale(1.08);
     color: #a0522d;
     text-decoration: underline;
 }
+
 .keyword {
     font-weight: bold;
     color: #8b4513;
