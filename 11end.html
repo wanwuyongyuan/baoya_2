@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11end - 奪刀成功</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Noto Serif SC', serif;
+  background: radial-gradient(circle at center, #3b2f1a 0%, #1e1407 80%);
+  color: #f5e7c4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+  line-height: 1.8;
+  font-size: 19px;
+  user-select: none;
+}
+
+#story {
+  max-width: 900px;
+  text-align: left;
+  width: 100%;
+}
+
+p {
+  margin: 12px 0;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+#dropKnife {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 25px;
+  color: #ffd966;
+  border: 1px solid #edcb77;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+</style>
+</head>
+<body>
+
+<div id="story">
+  <p>王奚妍成功夺下刀，父亲被击倒，昏死在地。空气骤然凝固。</p>
+  <p>她抬眼望向神台上的邪神。</p><br>
+  <p>——我的家，被它彻底毁掉了。</p><br>
+  <p>小徐在身后喊：“冷静！你要冷静！”小骏也呆立不动，不知所措。</p>
+  <p>王奚妍缓缓转身，声音出奇平静：“我很冷静。”</p>
+  <p>她举起刀，看向倒在地上闭眼的父亲。她知道现在该怎么做。</p><br>
+  <p>“献祭至亲，其效至烈……信徒之命，与神之力，不可分割。”壁画上的古文在她的脑海里回响。</p><br>
+  <p>她闭上眼，低声说——<br><br>“再见了，妈妈。”</p><br>
+ 
+
+  <div id="dropKnife">刀落下</div>
+</div>
+
+<script>
+// 逐行显示文本
+const paragraphs = document.querySelectorAll('#story p');
+let index = 0;
+function showNextParagraph() {
+  if (index < paragraphs.length) {
+    paragraphs[index].style.opacity = 1;
+    index++;
+    setTimeout(showNextParagraph, 1200);
+  } else {
+    document.getElementById('dropKnife').style.opacity = 1;
+  }
+}
+showNextParagraph();
+
+// 点击刀落下触发下一页
+document.getElementById('dropKnife').addEventListener('click', () => {
+    window.location.href = '12collapse.html';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 - 秘密献祭场塌陷</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at center, #5c0000 0%, #1e0000 80%);
+    color: #ffffff; /* 全部文字改成白色 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 30px;
+    line-height: 1.8;
+    font-size: 19px;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(255,0,0,0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+#story {
+    max-width: 900px;
+    text-align: left;
+    width: 100%;
+}
+
+p {
+    margin: 12px 0;
+    opacity: 0;
+    transition: opacity 0.8s;
+}
+
+.direction-choices {
+    margin-top: 30px;
+    text-align: center;
+    display: none;
+}
+
+.choice {
+    display: inline-block;
+    margin: 0 15px;
+    padding: 12px 28px;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 0 5px #000;
+    transition: background 0.3s, color 0.3s, transform 0.1s, box-shadow 0.3s;
+}
+
+.choice:hover {
+    background: #ffffff;
+    color: #1e0000;
+    box-shadow: 0 0 15px #ffffff;
+}
+
+.choice:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 5px #ffffff inset;
+}
+
+</style>
+</head>
+<body>
+
+<div id="story">
+<p>奚妍妈妈睁开眼睛，看见众人，如梦初醒，她的眼神中充满慌乱和紧迫感。</p><br>
+<p>她回头看到已经开始坍塌的洞穴，沙哑着嗓子大声喊道：“快走，快出去！”</p>
+<p>小徐犹豫几秒……其实她也来不及多想……她连忙扶住奚妍妈妈——毕竟她是他们家唯一还活着的人，也是用奚妍的命换来的命。</p>
+<p>塌陷的尘土弥漫，空气里充满血腥和潮湿泥土的味道。风声和石块落地的声音，以及他们急促的呼吸交织在一起，洞内的每一秒都显得无比漫长。</p>
+<p>小徐和小骏带着奚妍妈妈迅速沿着熟悉的路线前进。</p>
+<p>他们必须选择正确的方向，才能躲避不断坍塌的山体。</p>
+<p>塌方的声响在头顶回荡，逼迫他们不停前行。</p>
+</div>
+
+<div class="direction-choices" id="directionChoices">
+    <span class="choice" data-dir="left">左转</span>
+    <span class="choice" data-dir="right">右转</span>
+    <p>（连续选择三步：右 → 左 → 右）</p>
+</div>
+
+<script>
+    // 逐行显示文本，只执行一次
+const paragraphs = document.querySelectorAll('#story p');
+let index = 0;
+
+function showNextParagraph() {
+  if (index < paragraphs.length) {
+    paragraphs[index].style.opacity = 1;
+    index++;
+    setTimeout(showNextParagraph, 1200);
+  } else {
+    const choicesContainer = document.getElementById('directionChoices');
+    choicesContainer.style.display = 'block';
+    startStepTimer(); // 文本显示完后才启动倒计时
+  }
+}
+showNextParagraph();
+
+// 方向选择逻辑
+const sequence = ['right','left','right']; // 正确顺序
+let currentStep = 0;
+const choices = document.querySelectorAll('.choice');
+const timeLimit = 3000; // 每步3秒
+let stepTimer;
+
+function startStepTimer() {
+  clearTimeout(stepTimer);
+  stepTimer = setTimeout(() => {
+    alert('时间耗尽！你被塌方困住了……\n请重试当前步骤。');
+    // 禁用按钮短暂恢复
+    choices.forEach(c => c.disabled = true);
+    setTimeout(() => {
+      choices.forEach(c => c.disabled = false);
+      startStepTimer();
+    }, 1000);
+  }, timeLimit);
+}
+
+choices.forEach(choice => {
+  choice.addEventListener('click', () => {
+    clearTimeout(stepTimer);
+    const dir = choice.getAttribute('data-dir');
+    if (dir === sequence[currentStep]) {
+      currentStep++;
+      if (currentStep === sequence.length) {
+        window.location.href = '13next.html';
+      } else {
+        startStepTimer();
+      }
+    } else {
+      alert('方向错误！请重新选择当前步骤。');
+      startStepTimer();
+    }
+  });
+});
+
+</script>
+
+</body>
+</html>

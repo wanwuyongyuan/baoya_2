@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at center, #3b2f2f 0%, #000000 100%);
+    color: #f5f0e1;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.soup-top {
+    background: #f4e4bc; /* 浅色背景 */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(139,69,19,0.2);
+    max-width: 800px;
+    margin: 100px auto;
+    text-align: center;
+    color: #4a3219; /* 深色文字 */
+    position: relative;
+    background-image: 
+        repeating-linear-gradient(45deg, 
+            transparent, 
+            transparent 2px, 
+            rgba(139,69,19,0.03) 2px, 
+            rgba(139,69,19,0.03) 4px);
+}
+
+/* 汤面和问题的样式 */
+.soup-top p {
+    margin: 15px 0;
+    font-size: 1.6em;
+    line-height: 1.6;
+}
+
+.soup-top p.hint {
+    font-size: 1em;
+    color: #8b4513;
+    font-style: italic;
+    margin-top: 20px;
+}
+
+/* 汤面和问题中的关键词 */
+.soup-top strong {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #8b4513;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: all 0.3s ease;
+}
+
+.soup-top strong:hover {
+    color: #a0522d;
+    text-decoration: underline;
+}
+.keyword {
+    font-weight: bold;
+    color: #8b4513;
+    cursor: pointer;
+    border-bottom: 1px dotted #8b4513;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.keyword:hover {
+    color: #a0522d;
+}
+
+/* 问题区域统一样式 */
+.qa-section {
+    text-align: center;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #f4e4bc;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    color: #4a3219;
+}
+
+.qa-section h3 {
+    color: #8b4513;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.qa-section a {
+    display: inline-block;
+    margin: 10px 0;
+    color: #8b4513;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.qa-section a:hover {
+    background: rgba(139,69,19,0.1);
+    transform: translateY(-2px);
+}
+
+#back-btn {
+    padding: 10px 20px;
+    background: #b8860b;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+#back-btn:hover {
+    background: #d4af37;
+}
+
+/* 做旧风格的弹窗样式 */
+#answer-layer {
+    font-family: 'Noto Serif SC', serif;
+    background: #f4e4bc !important; /* 古旧纸张颜色 */
+    border: none !important;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3),
+                inset 0 0 30px rgba(139,69,19,0.2) !important;
+    padding: 30px !important;
+    border-radius: 8px !important;
+    color: #4a3219 !important;
+    max-width: 400px;
+    min-width: 300px;
+    text-align: center;
+    font-size: 1.1em;
+    position: relative;
+    /* 做旧纸张效果 */
+    background-image: 
+        repeating-linear-gradient(45deg, 
+            transparent, 
+            transparent 2px, 
+            rgba(139,69,19,0.03) 2px, 
+            rgba(139,69,19,0.03) 4px);
+}
+
+#answer-layer button {
+    margin-top: 20px;
+    background: #8b4513;
+    color: #f4e4bc;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#answer-layer button:hover {
+    background: #a0522d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+#answer-layer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 10% 20%, 
+            rgba(139,69,19,0.05) 0%, 
+            transparent 50%),
+        radial-gradient(circle at 90% 80%, 
+            rgba(139,69,19,0.05) 0%, 
+            transparent 50%);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+/* 答题区域样式 */
+.start-quiz {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.start-button {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    background: #8b4513;
+    color: #f4e4bc;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.start-button:hover {
+    background: #a0522d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.quiz-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 30px;
+    background: #f4e4bc;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(139,69,19,0.2);
+    text-align: center;
+    color: #4a3219;
+    font-family: 'Noto Serif SC', serif;
+}
+
+.quiz-container h3 {
+    font-size: 1.4em;
+    margin-bottom: 25px;
+    color: #8b4513;
+}
+
+.quiz-option {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    background: rgba(139,69,19,0.1);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1em;
+    color: #4a3219;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quiz-option:hover {
+    background: rgba(139,69,19,0.2);
+    transform: translateY(-2px);
+}
+
+#quiz-message {
+    margin-top: 20px;
+    color: #8b4513;
+    font-size: 1.1em;
+}
+
+.loading, .error, .final-message, .final-question, .final-answer {
+    font-size: 1.4em;
+    color: #8b4513;
+    margin: 30px 0;
+}
+
+.final-answer {
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.error {
+    color: #a0522d;
+}
+
+/* 发光按钮样式：白色、居中、发光效果 */
+.glow-button {
+    display: block;
+    margin: 24px auto 0 auto;
+    padding: 12px 28px;
+    background: #ffffff;
+    color: #111;
+    border: none;
+    border-radius: 999px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.05em;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glow-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.8);
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 12px rgba(255,255,255,0.7), 0 0 30px rgba(255,255,255,0.4); }
+    50% { box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.7); }
+    100% { box-shadow: 0 0 12px rgba(255,255,255,0.7), 0 0 30px rgba(255,255,255,0.4); }
+}
+
+.glow-button {
+    animation: pulseGlow 2.5s infinite ease-in-out;
+}

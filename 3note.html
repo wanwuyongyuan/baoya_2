@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>备忘录</title>
+
+<!-- 思源黑体 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
+  background: #f2f2f7; /* 苹果备忘录背景灰色 */
+  color: #1c1c1e;
+  height: 100vh;
+  display: flex;
+}
+
+#container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+/* 左侧标题栏 */
+#sidebar {
+  width: 200px;
+  background: #f2f2f7; /* 浅灰色 */
+  border-right: 1px solid #d0d0d0; /* 淡灰边框 */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.note-title-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid #dcdce0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.note-title-item:hover {
+  background: #e0e0e5; /* 悬停颜色略深 */
+}
+.note-title-item.active {
+  background: #ffffff; /* 当前选中白色 */
+  font-weight: 600;
+}
+
+/* 右侧内容区 */
+#note-content {
+  flex: 1;
+  padding: 24px 30px;
+  overflow-y: auto;
+  background: #ffffff; /* 白色内容区 */
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* 备忘录标题在内容区 */
+.note-content-title {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+</style>
+</head>
+
+<body>
+<div id="container">
+  <div id="sidebar">
+    <div class="note-title-item active" data-index="0">备忘录1</div>
+    <div class="note-title-item" data-index="1">备忘录2</div>
+    <div class="note-title-item" data-index="2">备忘录3</div>
+  </div>
+  <div id="note-content">
+    <div class="note-content-title">备忘录1</div>
+    那天是父母分开的日子。  
+    250711。
+  </div>
+</div>
+
+<script>
+const notes = [
+  {
+    title: "备忘录1",
+    content: "那天是父母分开的日子。  \n250711。"
+  },
+  {
+    title: "备忘录2",
+    content: "最近的事太多了，我得让自己冷静一点。\n妈妈最近常去宝亚保健公司参加活动，说是经常有健康讲座，很有益，她还报名了他们的什么VIP旅游活动……\n我劝过几次，她都不听。\n我知道，宝亚保健的名声不太好。那根本不是一个正规公司！\n我真的很担心我的妈妈。\n哎。\n——也许我该这么把事情说出去。"
+  },
+  {
+    title: "备忘录3",
+    content: "如果我去质问母亲，这只会让事情变得更僵。\n对了，我想起来论坛上有人讨论过宝亚的事，也许，我可以在那里发帖。\n不过……我的语气不能太激动，也不能太过于理性和冷淡。\n嗯，让别人觉得我是一个想救母亲的女儿。\n只要我写得真诚，网友们会相信我，也会帮我的。"
+  }
+];
+
+const sidebarItems = document.querySelectorAll(".note-title-item");
+const contentDiv = document.getElementById("note-content");
+
+sidebarItems.forEach(item => {
+  item.addEventListener("click", () => {
+    // 移除所有 active
+    sidebarItems.forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+    // 切换内容
+    const index = parseInt(item.getAttribute("data-index"));
+    contentDiv.innerHTML = `<div class="note-content-title">${notes[index].title}</div>${notes[index].content}`;
+  });
+});
+</script>
+</body>
+</html>

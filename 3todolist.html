@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>提醒事项</title>
+
+<!-- 思源黑体 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: #f2f2f7; /* 苹果提醒事项背景灰色 */
+  font-family: 'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
+  color: #1c1c1e;
+  padding: 40px;
+}
+
+/* 容器 */
+#todo-container {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #ffffff; /* 白色卡片 */
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* 标题 */
+#todo-container h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1c1c1e;
+}
+
+/* 待办项 */
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  font-size: 16px;
+  margin: 10px 0;
+  position: relative;
+  cursor: pointer;
+}
+
+/* 圆圈（类似 iOS 提醒事项） */
+.todo-item::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d1d6;
+  border-radius: 50%;
+  margin-right: 12px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* 被打码的彩蛋 */
+.todo-hidden {
+  display: inline-block;
+  background: #000;
+  color: transparent;
+  border-radius: 4px;
+  padding: 2px 6px;
+  position: relative;
+  user-select: none;
+  flex: 1;
+}
+
+/* 在黑条上显示淡淡“双击”提示 */
+.todo-hidden::after {
+  content: "双击";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-10%, -50%);
+  color: rgba(255,255,255,0.18);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* 解锁后 */
+.todo-hidden.revealed {
+  background: transparent;
+  color: #1c1c1e;
+}
+.todo-hidden.revealed::after {
+  content: "";
+}
+
+/* 密码框 */
+#password-box {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px;
+  border: 1px solid rgba(60,40,20,0.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  padding: 20px 25px;
+  z-index: 9999;
+}
+#password-box input {
+  width: 200px;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-family: inherit;
+  border-radius: 6px;
+  border: 1px solid rgba(60,40,20,0.2);
+  outline: none;
+}
+
+/* 密码错误抖动 */
+.shake {
+  animation: shake 0.25s;
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+</style>
+</head>
+
+<body>
+<div id="todo-container">
+  <h1>提醒事项</h1>
+
+  <div class="todo-item">
+    <span id="secret" class="todo-hidden">认识小徐和小田</span>
+  </div>
+  <div class="todo-item">摧毁邪神</div>
+  <div class="todo-item">摧毁宝亚保健</div>
+</div>
+
+<!-- 密码框 -->
+<div id="password-box">
+  <input type="password" id="password-input" placeholder="网络异常" autocomplete="off" />
+</div>
+
+<script>
+const secret = document.getElementById('secret');
+const box = document.getElementById('password-box');
+const input = document.getElementById('password-input');
+const PASSWORD = "112233";
+
+let failCount = 0; // 连续错误次数
+const FAIL_LIMIT = 3; // 超过 3 次给提示
+
+// 双击打开密码输入框
+secret.addEventListener('dblclick', () => {
+  box.style.display = 'block';
+  input.value = '';
+  input.focus();
+});
+
+// 按下回车验证
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (input.value === PASSWORD) {
+      box.style.display = 'none';
+      secret.classList.add('revealed');
+      failCount = 0; // 重置错误计数
+    } else {
+      failCount++;
+      input.classList.remove('shake');
+      void input.offsetWidth; // 触发重绘
+      input.classList.add('shake');
+      input.value = '';
+
+      if(failCount >= FAIL_LIMIT){
+        input.placeholder = "还不是解开它的时候呢，请先下一步"; // 提示玩家
+      } else {
+        input.placeholder = "网络异常";
+      }
+    }
+  }
+});
+
+// 点击外部关闭密码框
+document.addEventListener('click', e => {
+  if (!box.contains(e.target) && !secret.contains(e.target)) {
+    box.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>

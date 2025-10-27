@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="1haiguitang.css">
+<title>第一章：DREAM</title>
+
+<script>
+    function showQA(keyword) {
+        // 隐藏所有QA界面
+        var sections = document.getElementsByClassName('qa-section');
+        for(var i=0;i<sections.length;i++){ sections[i].style.display='none'; }
+        // 显示对应关键词的QA
+        document.getElementById(keyword + '-qa').style.display = 'block';
+    }
+
+    function showAnswer(ans) {
+        var layer = document.getElementById('answer-layer');
+        layer.innerHTML = ans + '<br><button onclick="closeAnswer()">关闭</button>';
+        layer.style.display = 'block';
+    }
+
+    function closeAnswer() {
+        document.getElementById('answer-layer').style.display = 'none';
+    }
+</script>
+</head>
+<body>
+
+<!-- 汤面 -->
+<div style="text-align:center; margin-top:50px; border:2px solid #000; padding:20px;">
+    <p>汤面：<span class="keywords">
+        <strong onclick="showQA('国王')">国王</strong>的<strong onclick="showQA('祭坛')">祭坛</strong>燃起
+        <strong onclick="showQA('红焰')">红焰</strong>，
+        <strong onclick="showQA('倒影')">倒影</strong>中多了一位
+    <strong onclick="showQA('逃亡')">逃亡</strong>的<strong onclick="showQA('公主')">公主</strong>。
+    </span></p>
+    <p>问题：公主是谁？公主是怎么逃出来的？还原故事。</p>
+    <p class="hint">（请点击加粗的文字进行探索）</p>
+</div>
+
+<!-- QA 界面 -->
+<div id="祭坛-qa" class="qa-section" style="display:none;">
+    <h3>祭坛</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('与此无关')">祭坛是国王亲自建造的吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('与此无关')">那天有多少人见证了祭坛的红焰？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('不是')">那火焰真的是火吗？</a></p>
+</div>
+
+<div id="国王-qa" class="qa-section" style="display:none;">
+    <h3>国王</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是')">国王是在追求什么吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是')">他一定要举行那场仪式？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('不是')">这是他第一次进行这种仪式吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('知道')">他知道‘公主’逃了吗？</a></p>
+</div>
+
+<div id="红焰-qa" class="qa-section" style="display:none;">
+    <h3>红焰</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('与此无关')">红焰持续了多久？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('不是')">那是真实的火焰吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是的')">有人倒下了吗？</a></p>
+</div>
+
+<div id="倒影-qa" class="qa-section" style="display:none;">
+    <h3>倒影</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是的')">公主真的存在吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是的')">那个倒影后来消失了吗？</a></p>
+</div>
+
+<div id="公主-qa" class="qa-section" style="display:none;">
+    <h3>公主</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是的')">她真的是国王的女儿吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('不是')">她是真的公主吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是逃走的')">她是被放走的，还是逃走的？</a></p>
+</div>
+
+<div id="逃亡-qa" class="qa-section" style="display:none;">
+    <h3>逃亡</h3>
+    <p><a href="javascript:void(0)" onclick="showAnswer('父亲')">她在逃什么？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('是也不是')">她害怕父亲吗？</a></p>
+    <p><a href="javascript:void(0)" onclick="showAnswer('没有')">有人追她吗？</a></p>
+</div>
+
+<!-- 答题区域 -->
+<div id="quiz-section" style="display:none;">
+    <div class="quiz-container">
+        <div id="quiz-question"></div>
+        <div id="quiz-options"></div>
+        <div id="quiz-message"></div>
+    </div>
+</div>
+
+<!-- 自定义浮层弹窗 -->
+<div id="answer-layer" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:#fff;color:#000; padding:20px; border:3px solid #000; z-index:1000;"></div>
+
+<!-- 开始答题按钮 -->
+<div class="start-quiz">
+    <button onclick="startQuiz()" class="start-button">我已经准备好，开始回答问题吧。</button>
+</div>
+<div id="answer-layer" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:#fff;color:#000; padding:20px; border:3px solid #000; z-index:1000;"></div>
+
+<script>
+const questions = [
+    {
+        question: "公主真的存在吗？",
+        options: [
+            "不存在，是幻象",
+            "是的，但她不是公主",
+            "皇后的替身",
+            "被邪神附体"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "红焰是什么？",
+        options: [
+            "烛台里的火焰",
+            "燃烧仪式",
+            "血",
+            "一种颜色"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "红焰代表了谁的血？",
+        options: [
+            "国王的",
+            "公主的",
+            "不是国王的，也不是公主的"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "国王举行仪式的目的是什么？",
+        options: [
+            "祭祀祖先",
+            "追求力量",
+            "惩罚叛徒",
+            "保护国家"
+        ],
+        correctAnswer: 1
+    }
+];
+
+let currentQuestion = 0;
+let answeredCorrectly = [];
+
+function startQuiz() {
+    // 隐藏所有QA界面和开始按钮
+    document.querySelectorAll('.qa-section').forEach(section => section.style.display = 'none');
+    document.querySelector('.start-quiz').style.display = 'none';
+    
+    // 显示答题区域
+    document.getElementById('quiz-section').style.display = 'block';
+    showQuestion();
+}
+
+function showQuestion() {
+    const quizQuestion = document.getElementById('quiz-question');
+    const quizOptions = document.getElementById('quiz-options');
+    const question = questions[currentQuestion];
+
+    quizQuestion.innerHTML = `<h3>${question.question}</h3>`;
+    quizOptions.innerHTML = question.options.map((option, index) => 
+        `<button onclick="checkAnswer(${index})" class="quiz-option">${option}</button>`
+    ).join('');
+}
+
+function checkAnswer(answerIndex) {
+    if (answerIndex === questions[currentQuestion].correctAnswer) {
+        answeredCorrectly[currentQuestion] = true;
+        
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            showQuestion();
+        } else if (answeredCorrectly.filter(Boolean).length === questions.length) {
+            showFinalSequence();
+        }
+    } else {
+        document.getElementById('quiz-message').innerHTML = "答案不正确，请重试。";
+        setTimeout(() => {
+            document.getElementById('quiz-message').innerHTML = "";
+        }, 2000);
+    }
+}
+
+function showFinalSequence() {
+    const quizContainer = document.querySelector('.quiz-container');
+    quizContainer.innerHTML = '<div class="loading">加载中...</div>';
+    
+    setTimeout(() => {
+        quizContainer.innerHTML = '<div class="error">恭喜您答对了全部问题！</div>';
+        setTimeout(() => {
+            quizContainer.innerHTML = '<div class="final-message">但，您还差最后一个问题。</div>';
+            setTimeout(() => {
+                quizContainer.innerHTML = '<div class="final-question">她是否回头看过？</div>';
+                setTimeout(() => {
+                    showFinalAnswer();
+                }, 3000);
+            }, 2000);
+        }, 2000);
+    }, 1000);
+}
+
+function showFinalAnswer() {
+    const quizContainer = document.querySelector('.quiz-container');
+    const answer = "【她正在回头看】";
+    let index = 0;
+    
+    function typeWriter() {
+        if (index < answer.length) {
+            quizContainer.innerHTML = '<div class="final-answer">' + answer.substring(0, index + 1) + '</div>';
+            index++;
+            setTimeout(typeWriter, 200);
+        } else {
+            // 打字完成后，先显示完整答案，延迟 1 秒再添加发光按钮（跳转到 2mengxing.html）
+            quizContainer.innerHTML = '<div class="final-answer">' + answer + '</div>';
+            setTimeout(function() {
+                var btn = document.createElement('button');
+                btn.id = 'next-btn';
+                btn.className = 'glow-button';
+                btn.textContent = '下一章：AWAKE';
+                btn.onclick = function() { window.location.href = '2mengxing.html'; };
+                quizContainer.appendChild(btn);
+            }, 1000);
+        }
+    }
+
+    typeWriter();
+}
+</script>
+
+</body>
+</html>

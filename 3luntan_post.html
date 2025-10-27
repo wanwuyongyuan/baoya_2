@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>论坛 — 发帖页面</title>
+
+<!-- 思源黑体 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#ffe4ec;
+    --panel:#fff0f5;
+    --accent:#f5a6c0;
+    --accent-dark:#f078a0;
+    --text:#3c1c3c;
+    --muted:#a63a6a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:40px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  #post-container{
+    width:900px;
+    max-width:95%;
+    background:var(--panel);
+    border-radius:12px;
+    padding:34px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  h2{
+    margin:0 0 18px 0;
+    text-align:center;
+    color:var(--muted);
+  }
+
+  /* 假输入框（点击弹出选项） */
+  .fake-input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(216,154,186,0.6);
+    background:#fff6fb;
+    color:var(--text);
+    cursor:pointer;
+    margin-bottom:18px;
+    font-size:16px;
+  }
+  .fake-input:active{transform:translateY(1px)}
+
+  /* 选项区 */
+  .options{ display:none; margin-bottom:20px; }
+  .option-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    margin:8px 0;
+    padding:12px 14px;
+    color:#fff;
+    background:var(--accent);
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-size:18px;
+    transition:background .12s, transform .06s;
+  }
+  .option-btn:hover{ background:var(--accent-dark) }
+  .option-btn:active{ transform: translateY(1px) }
+  .option-label{ font-size:15px; color:var(--text); margin-left:8px; font-weight:600 }
+
+  /* 验证区 */
+  #verify-container{ display:none; margin-top:18px; text-align:center; }
+  #verify-code{
+    font-weight:700;
+    letter-spacing:2px;
+    font-size:20px;
+    margin-bottom:10px;
+    cursor:pointer;
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.6);
+    border:1px solid rgba(216,154,186,0.5);
+  }
+  #verify-input{
+    width:220px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(216,154,186,0.6);
+    outline:none;
+    font-size:16px;
+  }
+  #verify-btn{
+    margin-left:10px;
+    padding:8px 12px;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  #verify-msg{ color:var(--muted); margin-top:8px; min-height:18px }
+
+  /* 帖子框 */
+  #result-post{
+    display:none;
+    margin-top:22px;
+  }
+  .post-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--text);
+  }
+  .post-frame{
+    margin-top:12px;
+    padding:18px;
+    border-radius:10px;
+    background:#fff;
+    border:1px solid rgba(216,154,186,0.25);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+    line-height:1.75;
+    white-space:pre-line;
+    font-size:16px;
+  }
+
+  /* 小提示样式 */
+  .muted { color:var(--muted); font-size:14px; margin-top:8px }
+</style>
+</head>
+<body>
+  <div id="post-container">
+    <h2>发帖页面</h2>
+
+    <!-- 假输入框 -->
+    <div class="fake-input" id="fake-input">点击此处选择发帖内容（从三轮选项中组合）</div>
+
+    <!-- 三轮选项 -->
+    <div class="options" id="round1">
+      <strong>第一轮：</strong>
+      <button class="option-btn" data-correct="true">我好怕……请救救我。 <span class="option-label">〔无助〕</span></button>
+      <button class="option-btn" data-correct="false">我要曝光宝亚保健！ <span class="option-label">〔愤怒〕</span></button>
+      <button class="option-btn" data-correct="false">我只是想说出真相。 <span class="option-label">〔平静〕</span></button>
+      <button class="option-btn" data-correct="false">我不知道该怎么办，但我不能再沉默。 <span class="option-label">〔决心〕</span></button>
+    </div>
+
+    <div class="options" id="round2">
+      <strong>第二轮：</strong>
+      <button class="option-btn" data-correct="false">我是当事人，我可以作证！ <span class="option-label">〔坚定〕</span></button>
+      <button class="option-btn" data-correct="true">我的母亲在这里面陷得很深，我真的要救救她。 <span class="option-label">〔焦急〕</span></button>
+      <button class="option-btn" data-correct="false">我不想攻击谁，只希望有人能理解我。 <span class="option-label">〔寻求安慰〕</span></button>
+      <button class="option-btn" data-correct="false">听说很多人都被骗了，我想提醒大家看住自己的父母！ <span class="option-label">〔警觉〕</span></button>
+    </div>
+
+    <div class="options" id="round3">
+      <strong>第三轮：</strong>
+      <button class="option-btn" data-correct="true">我一个人的力量不能扳倒一个大公司，所以想来论坛上问问…… <span class="option-label">〔理性〕</span></button>
+      <button class="option-btn" data-correct="false">宝亚保健是个邪/教公司！我要曝光！ <span class="option-label">〔愤怒〕</span></button>
+      <button class="option-btn" data-correct="false">我必须做点什么！希望能和有同样想法的人一起想办法。 <span class="option-label">〔希望〕</span></button>
+    </div>
+
+    <!-- 验证区 -->
+    <div id="verify-container">
+      <p>为了确保帖子真实有效，请完成验证：</p>
+      <div id="verify-code" title="点击可切换验证码"></div>
+      <div style="margin-top:8px;">
+        <input id="verify-input" type="text" placeholder="输入验证码" />
+        <button id="verify-btn">验证</button>
+      </div>
+      <div id="verify-msg" class="muted"></div>
+    </div>
+
+    <!-- 发布成功后显示 -->
+    <div id="result-post" style="display:none;">
+      <!-- 原本显示的“你成功发帖”内容已去掉 -->
+    </div>
+
+  </div>
+
+<script>
+  /* --- 三轮逻辑 --- */
+  let step = 0;
+  const rounds = ['round1','round2','round3'];
+  const fakeInput = document.getElementById('fake-input');
+  const verifyContainer = document.getElementById('verify-container');
+  const verifyCodeDiv = document.getElementById('verify-code');
+  const verifyMsg = document.getElementById('verify-msg');
+  const resultPost = document.getElementById('result-post');
+
+  const codes = ["3F9bX2Q","a7K2Z8m","T5r9P0w"];
+  let codeIndex = 0;
+  let currentCaptcha = codes[codeIndex];
+  verifyCodeDiv.textContent = currentCaptcha;
+
+  fakeInput.addEventListener('click', ()=>{
+    if(step === 0) document.getElementById(rounds[step]).style.display = 'block';
+  });
+
+  document.querySelectorAll('.option-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      const correct = btn.getAttribute('data-correct') === 'true';
+      if(!correct){
+        alert("我不想这么发帖……这和我真正的心意不符，请重新选择。");
+        return;
+      }
+      document.getElementById(rounds[step]).style.display = 'none';
+      step++;
+      if(step < 3){
+        document.getElementById(rounds[step]).style.display = 'block';
+      } else {
+        verifyContainer.style.display = 'block';
+        verifyCodeDiv.textContent = currentCaptcha;
+        verifyMsg.textContent = '';
+      }
+    });
+  });
+
+  verifyCodeDiv.addEventListener('click', ()=>{
+    codeIndex = (codeIndex + 1) % codes.length;
+    currentCaptcha = codes[codeIndex];
+    verifyCodeDiv.textContent = currentCaptcha;
+    verifyMsg.textContent = '';
+  });
+
+  document.getElementById('verify-btn').addEventListener('click', ()=>{
+    const val = document.getElementById('verify-input').value.trim();
+    if(val === currentCaptcha){
+      verifyContainer.style.display = 'none';
+      alert("你成功发帖！");
+      showPostedContent();
+    } else {
+      verifyMsg.textContent = '验证失败，请重新输入';
+      document.getElementById('verify-input').value = '';
+      codeIndex = (codeIndex + 1) % codes.length;
+      currentCaptcha = codes[codeIndex];
+      verifyCodeDiv.textContent = currentCaptcha;
+    }
+  });
+
+  document.getElementById('verify-input').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') document.getElementById('verify-btn').click();
+  });
+
+  /* --- 显示帖子内容 --- */
+  let repliesShown = false; // 防止重复触发
+  function showPostedContent(){
+    if(!document.getElementById('post-frame')){
+      const frame = document.createElement('div');
+      frame.className = 'post-frame';
+      frame.id = 'post-frame';
+      const bodyText = `我好怕……请救救我。
+妈妈最近在接触一个叫“宝亚保健”的组织，她说那是为了健康，可我能感觉到她陷得越来越深。
+我试过劝她，但她根本听不进去。
+
+我真的不知道该怎么办了。
+
+我查了一些资料，发现那家公司好像并不那么单纯，可能跟Xie/Jiao有关。
+可我一个人的力量，根本扳不动一个大公司。
+所以我想来这里问问，看看有没有人能帮帮我。
+有没有人也经历过类似的事？
+有没有人知道该怎么让家人醒过来？
+
+如果有的话，请告诉我该怎么做。 
+
+拜托了。`;
+      frame.textContent = bodyText;
+      resultPost.appendChild(frame);
+    }
+    resultPost.style.display = 'block';
+    setTimeout(()=>{ resultPost.scrollIntoView({behavior:'smooth', block:'center'}); }, 80);
+
+    // 延迟显示回复列表（只触发一次）
+    if(!repliesShown){
+      repliesShown = true;
+      setTimeout(showReplies, 11000); 
+    }
+  }
+
+  /* --- 显示回复列表和玩家点击选项 --- */
+  function showReplies(){
+    alert("您收到了回复！");
+
+    const replies = [
+      "【超级大社畜】：我只能帮你把消息传出去，让其他老人谨防受骗……你要小心啊，据说王老板越/狱了！",
+      "【西瓜超人】： 抱歉，我只能祝福你。",
+      "【Xxxx】： 我也曾是受害者之一，我可以帮助你，你留个OO号我来加你。自证： "
+    ];
+
+    const replyDiv = document.createElement('div');
+    replyDiv.style.background = '#fff0f5';
+    replyDiv.style.border = '1px solid #f078a0';
+    replyDiv.style.padding = '20px';
+    replyDiv.style.marginTop = '20px';
+    replyDiv.style.borderRadius = '12px';
+    replyDiv.style.width = '100%';
+    replyDiv.style.maxWidth = '900px';
+    replyDiv.style.fontSize = '16px';
+    replyDiv.style.boxSizing = 'border-box';
+    replyDiv.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+    replyDiv.style.wordBreak = 'break-word';
+
+    replyDiv.innerHTML = "<strong>回复列表：</strong><br><br>";
+
+    replies.forEach((r,i)=>{
+      const p = document.createElement('p');
+      p.innerHTML = r;
+
+      if(i === 2){
+        const btn = document.createElement('button');
+        btn.textContent = "点击查看图片";
+        btn.style.marginLeft = '8px';
+        btn.style.padding = '4px 8px';
+        btn.style.borderRadius = '6px';
+        btn.style.border = 'none';
+        btn.style.background = '#f5a6c0';
+        btn.style.color = '#fff';
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', ()=>{
+          alert("这是宝亚保健有限公司工牌的一角（文字图示）");
+        });
+        p.appendChild(btn);
+      }
+
+      replyDiv.appendChild(p);
+    });
+
+    // 玩家点击回复
+    const playerReplies = [
+      "太好了，我的OO号是xiaoxiongbuguai！",
+      "谢谢你，我会小心的。"
+    ];
+
+    const replyOptionsDiv = document.createElement('div');
+    replyOptionsDiv.style.marginTop = '12px';
+    replyOptionsDiv.style.display = 'flex';
+    replyOptionsDiv.style.flexDirection = 'column';
+    replyOptionsDiv.style.gap = '8px';
+
+    playerReplies.forEach((text, index)=>{
+      const btn = document.createElement('button');
+      btn.textContent = `点击回复${index+1}`;
+      btn.style.padding = '8px 12px';
+      btn.style.borderRadius = '8px';
+      btn.style.border = '1px solid #f078a0';
+      btn.style.background = '#fff7f0';
+      btn.style.cursor = 'pointer';
+      btn.style.fontSize = '16px';
+
+      btn.addEventListener('click', ()=>{
+        const p = document.createElement('p');
+        if(index === 0){
+          p.innerHTML = '您回复：太好了，我的' +
+            '<a href="4OO.html" target="_blank" style="color:#f078a0;text-decoration:underline;">OO</a>' +
+            '号是xiaoxiongbuguai！';
+        } else {
+          p.textContent = '您回复：' + text;
+        }
+        p.style.background = '#fff0f5';
+        p.style.padding = '12px 16px';
+        p.style.borderRadius = '12px';
+        p.style.marginTop = '6px';
+        p.style.border = '1px solid #f078a0';
+        p.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.4)';
+        p.style.wordBreak = 'break-word';
+
+        replyDiv.appendChild(p);
+        p.scrollIntoView({behavior:'smooth', block:'center'});
+
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+      });
+
+      replyOptionsDiv.appendChild(btn);
+    });
+
+    replyDiv.appendChild(replyOptionsDiv);
+
+    resultPost.appendChild(replyDiv);
+    replyDiv.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+</script>
+
+
+
+
+
+</body>
+</html>

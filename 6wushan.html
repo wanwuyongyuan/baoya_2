@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雾山</title>
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(to bottom, #a0d6e0, #005f73);
+  color: #0b2340; /* 文字颜色改成深色方便在浅色背景显示 */
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+#text-container {
+  max-width: 800px;
+  margin: 0 auto;  /* 水平居中 */
+  line-height: 1.8;
+  font-size: 18px;
+  position: relative;  /* 保证 z-index 生效 */
+  z-index: 1;
+}
+
+  .line {
+    opacity: 0;
+    transition: opacity 0.5s;
+    margin-bottom: 10px;
+  }
+  .line strong {
+    font-weight: bold;
+  }
+.fog {
+    position: absolute;
+    color: #a0d6e0;
+    font-size: 350px; /* 字体更大 */
+    font-weight: bold;
+    opacity: 1; /* 合法值 */
+    text-shadow: 
+      0 0 50px #a0d6e0, 
+      0 0 100px #a0d6e0, 
+      0 0 150px #bee4ea; /* 更强发光 */
+    cursor: grab;
+    user-select: none;
+    z-index: 100;
+}
+
+ #secret {
+    color: red;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    text-shadow: none; /* 去掉发光 */
+}
+
+
+.story-next {
+  max-width: 800px;
+  margin: 50px auto;
+  font-size: 18px;              /* ✅ 与正文一致 */
+  line-height: 1.8;             /* ✅ 与正文一致 */
+  color: #ffffff;               /* ✅ 与正文一致 */
+  font-family: 'Noto Sans SC', sans-serif; /* ✅ 与正文一致 */
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+#text-container {
+  position: relative;
+  z-index: 50;  /* 文字在雾气下面显示，但仍在页面滚动 */
+}
+
+#fog-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: none; /* ✅ 不拦截点击事件 */
+}
+.fog {
+  pointer-events: auto; /* ✅ 单独让雾气本身可拖动 */
+}
+
+.fog {
+  position: absolute;
+  color: rgba(200,255,255,0.4);
+  text-shadow: 0 0 40px rgba(255,255,255,0.7), 0 0 60px rgba(200,255,255,0.5);
+  cursor: grab;
+  user-select: none;
+  z-index: 100;
+}
+.fog {
+  user-select: none;       /* 禁止选中 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 🔻 在你的 <style> 里加这段 */
+#ancient-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: radial-gradient(circle at center, #3b1d0b 0%, #000 90%);
+  color: #fff;
+  padding: 40px 60px;
+  border-radius: 10px;
+  max-width: 800px;
+  line-height: 1.9;
+  font-size: 18px;
+  font-family: 'Noto Serif SC', '思源宋体', serif;
+  box-shadow: 0 0 60px rgba(255, 200, 150, 0.4);
+  text-align: justify;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 32px;
+  color: #f0e0c0;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.ancient-text p {
+  margin-bottom: 1.2em;
+  text-indent: 2em;
+}
+
+.ancient-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.ancient-box {
+  background: radial-gradient(circle at center, #2a1b00 30%, #000 100%);
+  border: 2px solid #b6935b;
+  box-shadow: 0 0 40px rgba(255,220,160,0.3);
+  padding: 40px;
+  max-width: 800px;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.9;
+  font-family: 'Noto Serif SC', serif;
+  border-radius: 10px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  color: #d3b97d;
+  cursor: pointer;
+}
+
+.ancient-text p {
+  margin-bottom: 1.3em;
+}
+
+.slide-link {
+  color: #ffffff;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.slide-link::after {
+  content: " ➤";
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.3s ease;
+}
+.slide-link:hover {
+  color: #ff4d4d;
+}
+.slide-link:hover::after {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+
+</style>
+</head>
+<body>
+
+<div id="text-container">
+  <div class="line">我赶紧从出租屋里出来，街道上空气里还残留着夜色的余温。我叫了辆出租车，快速前往雾山。</div>
+  <div class="line">雾山，果然如其名，这里浓雾弥漫，什么都看不清。就像一个谜团，让人摸不着边际。我在出租车里轻轻咳嗽了几声。外面雾气里带着的湿冷凉意，从缝隙中钻进车里，呛得我喉咙发紧。</div>
+  <div class="line">到了山脚。在我下车开门的一瞬间，冷风直钻车里，寒风入骨，我忍不住打了个寒颤，又咳嗽了一下。出租车缓缓驶离，远行的车灯在雾气里逐渐变得模糊不清，再次让我感到一阵寒意。</div>
+  <div class="line">幸好，我等了一会儿，很快就看到了两女一男。他们就是小徐、小田，以及小骏。</div>
+  <div class="line">我们四人缓缓走进山里。</div>
+  <div class="line">这边刚下过雨，山路泥泞不堪，又滑又软，非常不好走。不仅如此，这里浓雾弥漫，什么都看不清。</div>
+  <div class="line"><strong>我伸出手试着拨开眼前的雾气。</strong></div>
+  <div class="line"><strong>雾气缓缓散开。</strong></div>
+  <div class="line">雾气终于稍微散开，我看清前方，泥路尽头的出口透出微光，山风夹带寒意，树枝随风摇曳。</div>
+  <div class="line">小徐低声说：“看起来没问题，慢慢走。”</div>
+  <div class="line">小骏没来过这里，走得小心翼翼，却还是频频踩进不明显的泥洞里，差点摔倒。</div>
+  <div class="line">“这里太滑了，大家小心点。”我边走边咳嗽。</div>
+  <div class="line">就在此时，山上的鸟叫声突兀响起，把所有人吓了一跳。</div>
+  <div class="line">我被吓得咳嗽，脚下一滑。</div>
+  <div class="line">“小心！”</div>
+  <div class="line">小田一把抓住我，但没想到这一片泥地太过湿滑，我们四人一个接一个全部掉了下去。</div>
+ <div class="line">
+  <a href="7shandong.html" class="slide-link">令大家都没想到的是，这一滑，直接滑落入了山洞——</a>
+</div>
+
+<!-- 雾气层 -->
+<div id="fog-container" style="position: absolute; top:0; left:150px; width:100%; height:100%;">
+  <div class="fog" style="top:50px; left:30px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:150px; left:250px; font-size:5.5em;">雾气</div>
+  <div class="fog" style="top:300px; left:100px; font-size:6.2em;">雾气</div>
+  <div class="fog" style="top:450px; left:220px; font-size:5.8em;">雾气</div>
+  <div class="fog" style="top:100px; left:400px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:350px; left:500px; font-size:5.5em;">雾气</div>
+  <div class="fog" style="top:250px; left:600px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:500px; left:650px; font-size:5.7em;">雾气</div>
+  <div class="fog" style="top:180px; left:550px; font-size:5.8em;">雾气</div>
+  <div class="fog" style="top:480px; left:400px; font-size:5.8em;">雾气</div>
+  <div class="fog" style="top:120px; left:600px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:280px; left:500px; font-size:5.7em;">雾气</div>
+  <div class="fog" style="top:50px; left:550px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:220px; left:700px; font-size:5.9em;">雾气</div>
+  <div class="fog" style="top:400px; left:750px; font-size:6.1em;">雾气</div>
+  <div class="fog" style="top:70px; left:150px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:180px; left:320px; font-size:5.5em;">雾气</div>
+  <div class="fog" style="top:320px; left:180px; font-size:6.2em;">雾气</div>
+  <div class="fog" style="top:470px; left:280px; font-size:5.8em;">雾气</div>
+  <div class="fog" style="top:130px; left:450px; font-size:6em;">雾气</div>
+  <div class="fog" style="top:370px; left:550px; font-size:5.5em;">雾气</div>
+</div>
+
+
+<script>
+// ------------------------
+// 拖动雾气
+// ------------------------
+const fogs = document.querySelectorAll('.fog');
+fogs.forEach(fog => {
+    let offsetX, offsetY, isDragging = false;
+    
+    fog.addEventListener('mousedown', e => {
+        e.preventDefault();
+        isDragging = true;
+        offsetX = e.clientX - fog.offsetLeft;
+        offsetY = e.clientY - fog.offsetTop;
+        fog.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', e => {
+        if(!isDragging) return;
+        fog.style.left = (e.clientX - offsetX) + 'px';
+        fog.style.top = (e.clientY - offsetY) + 'px';
+    });
+    document.addEventListener('mouseup', () => { 
+        isDragging = false; 
+        fog.style.cursor = 'grab';
+    });
+
+    // 手机端拖动
+    fog.addEventListener('touchstart', e => {
+        e.preventDefault();
+        isDragging = true;
+        let touch = e.touches[0];
+        offsetX = touch.clientX - fog.offsetLeft;
+        offsetY = touch.clientY - fog.offsetTop;
+    });
+    document.addEventListener('touchmove', e => {
+        if(!isDragging) return;
+        let touch = e.touches[0];
+        fog.style.left = (touch.clientX - offsetX) + 'px';
+        fog.style.top = (touch.clientY - offsetY) + 'px';
+    });
+    document.addEventListener('touchend', () => { isDragging = false; });
+});
+
+// ------------------------
+// 逐行显示文本
+// ------------------------
+const lines = document.querySelectorAll('.line');
+let index = 0;
+function showNextLine() {
+  if (index >= lines.length) return;
+  lines[index].style.opacity = 1;
+  index++;
+  setTimeout(showNextLine, 800);
+}
+setTimeout(showNextLine, 800);
+
+// ------------------------
+// 点击秘密文字 → 打开古文卷轴 → 关闭后淡入新剧情
+// ------------------------
+const secret = document.getElementById('secret');
+const modal = document.getElementById('ancient-modal');
+const closeBtn = document.querySelector('.close-btn');
+const storyNext = document.getElementById('story-next'); // ✅ 关键补上这行
+
+function closeModal() {
+  modal.style.display = 'none';
+  storyNext.style.display = 'block';
+  setTimeout(() => {
+    storyNext.style.opacity = 1;
+  }, 100);
+}
+
+secret.addEventListener('click', () => {
+  modal.style.display = 'flex';
+});
+
+closeBtn.addEventListener('click', closeModal);
+
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeModal();
+});
+</script>
+
+</body>
+</html>

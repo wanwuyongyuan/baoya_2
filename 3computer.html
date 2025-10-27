@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>电脑桌面</title>
+
+<!-- ✅ 引入思源黑体（Google Fonts 版） -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #f9f6ef;
+  font-family: 'Noto Sans SC', '思源黑体', 'Microsoft YaHei', sans-serif;
+}
+
+/* 桌面图标 */
+.desktop-icon {
+  width: 100px;
+  height: 100px;
+  background: rgba(216, 183, 122, 0.3);
+  border: 2px solid rgba(60, 40, 20, 0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 10px;
+  font-size: 16px;
+  color: #3c2814;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.desktop-icon:hover {
+  background: rgba(216, 183, 122, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* 弹窗 */
+#popup {
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  border:2px solid #3c2814;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  font-size:16px;
+  color:#3c2814;
+  z-index:10000;
+  max-width:300px;
+  text-align:center;
+}
+#popup button {
+  margin-top:10px;
+  background:#d8b77a;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:'Noto Sans SC',sans-serif;
+}
+#popup button:hover {
+  background:#c9a967;
+}
+
+/* ✅ 底部时间栏 */
+#clockbar {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:36px;
+  background:rgba(60,40,20,0.75);
+  border-top:1px solid rgba(255,255,255,0.2);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding:0 20px;
+  font-family:'Noto Sans SC','Microsoft YaHei',sans-serif;
+  color:#f2e3c6;
+  font-size:14px;
+  z-index:9999;
+  box-sizing:border-box;
+}
+#clock {
+  text-align:right;
+}
+#clock-time {
+  line-height:16px;
+}
+#clock-date {
+  font-size:12px;
+  opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 左下角“查看照片”标签 -->
+<div id="photo" style="
+  position:absolute;
+  left:40px;bottom:60px;
+  width:130px;height:40px;
+  background:#d8b77a;
+  color:#3c2814;
+  font-size:16px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid rgba(60,40,20,0.3);
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+  cursor:pointer;
+  border-radius:6px;">
+  查看桌面照片
+</div>
+
+<!-- 桌面图标区域 -->
+<div style="
+  position:absolute;
+  top:60px;
+  left:60px;
+  display:flex;
+  flex-direction:column;
+  gap:30px;
+">
+  <div id="forum" class="desktop-icon">
+    <span>论坛</span>
+  </div>
+  <div id="todo" class="desktop-icon">
+    <span>待办事项</span>
+  </div>
+  <div id="memo" class="desktop-icon">
+    <span>备忘录</span>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div id="popup">
+  <p id="popup-text"></p>
+  <button onclick="closePopup()">查看桌面</button>
+</div>
+
+<!-- 底部时间栏 -->
+<div id="clockbar">
+  <div id="clock">
+    <div id="clock-time">--:--</div>
+    <div id="clock-date">--/--</div>
+  </div>
+</div>
+
+<!-- JS逻辑 -->
+<script>
+const popup = document.getElementById('popup');
+const popupText = document.getElementById('popup-text');
+
+function openPopup(text){
+  popupText.textContent = text;
+  popup.style.display = 'block';
+}
+function closePopup(){
+  popup.style.display = 'none';
+}
+
+document.getElementById('photo').onclick = function(){
+  openPopup('一张少女和母亲的合照，背景温柔，但照片里没有父亲的身影。');
+};
+document.getElementById('forum').onclick = function(){
+  window.open('3luntan.html', '_blank');
+};
+document.getElementById('todo').onclick = function(){
+  window.open('3todolist.html', '_blank');
+};
+document.getElementById('memo').onclick = function(){
+  window.open('3note.html', '_blank');
+};
+
+
+function updateClock() {
+  const now = new Date();
+  const time = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  const date = now.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+  document.getElementById('clock-time').textContent = time;
+  document.getElementById('clock-date').textContent = date;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+
+</script>
+
+
+</body>
+</html>

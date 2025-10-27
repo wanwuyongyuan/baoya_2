@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OO聊天界面</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    margin:0;
+    font-family:'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
+    display:flex;
+    height:100vh;
+    overflow:hidden;
+    background:#eef4fc;
+  }
+  #friends {
+    width:350px;
+    background: #fff;
+    border-right:1px solid #ccc;
+    overflow-y:auto;
+    padding:10px;
+    box-sizing:border-box;
+  }
+  .friend {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    cursor:pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .friend:hover { background: #e0f0ff; border-color: #3399ff; }
+  .friend.active { background: #d0e4ff; border-color: #3399ff; }
+
+  #chat-container{
+    flex:1;
+    display:flex;
+    max-width:1100px;
+    flex-direction:column;
+    background:#f0f4fc;
+  }
+  #chat-header{ padding:12px; font-weight:700; background:#d0e0fc; border-bottom:1px solid #ccc; }
+  #chat-body{ flex:1; padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+  .msg{ max-width:70%; padding:8px 12px; border-radius:12px; word-break:break-word; position:relative; }
+  .left{ background:#fff; align-self:flex-start; }
+  .right{ background:#3399ff; color:#fff; align-self:flex-end; }
+  .system{ background:#cce0ff; color:#0055aa; text-align:center; align-self:center; font-size:14px; border-radius:6px; padding:4px 8px; }
+  .time{ font-size:12px; color:#666; margin-bottom:2px; }
+
+  #slider-container{ display:none; margin:12px 0; background:#cce0ff; border:1px solid #3399ff; border-radius:12px; padding:12px; text-align:center; }
+  #slider{ width:80%; height:20px; background:#3399ff; margin:12px auto; border-radius:10px; position:relative; cursor:pointer; }
+  #slider-handle{ width:20px; height:20px; background:#fff; position:absolute; left:0; top:0; border-radius:50%; touch-action:none; }
+
+  /* 发光按钮 */
+  .glow-button {
+    display: inline-block;
+    margin: 18px auto 0 auto;
+    padding: 10px 22px;
+    background: #ffffff;
+    color: #0b2340;
+    border: none;
+    border-radius: 999px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 0 16px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block; text-align:center;
+  }
+  .glow-button:hover { transform: translateY(-3px); box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+
+<div id="friends">
+  <h3>好友列表</h3>
+  <div class="friend active" data-chat="xiaoxu">小徐</div>
+  <div class="friend">宝宝</div>
+  <div class="friend">LNsa陈</div>
+  <div class="friend">万物永远</div>
+  <div class="friend">小缘宝贝</div>
+</div>
+
+<div id="chat-container">
+  <div id="chat-header">小徐</div>
+  <div id="chat-body"></div>
+
+  <div id="slider-container">
+    <div>系统提示：“网络异常，需要验证你不是机器人才能继续聊天。”</div>
+    <div id="slider">拖动滑块完成验证<div id="slider-handle"></div></div>
+    <div id="slider-msg"></div>
+  </div>
+
+  <div id="next-page-btn-container" style="text-align:center; margin:20px 0;"></div>
+</div>
+
+<script>
+const chatBody = document.getElementById('chat-body');
+const sliderContainer = document.getElementById('slider-container');
+const slider = document.getElementById('slider');
+const handle = document.getElementById('slider-handle');
+const sliderMsg = document.getElementById('slider-msg');
+const nextBtnContainer = document.getElementById('next-page-btn-container');
+
+const messages = [
+{time:"07:41", sender:"system", text:"您已成功添加新朋友【小徐】", side:"system"},
+{time:"07:42", sender:"小徐", text:"早啊，你醒了吗？", side:"left"},
+{time:"07:42", sender:"玩具熊", text:"早，刚起。", side:"right"},
+{time:"07:44", sender:"小徐", text:"看你发帖时间是凌晨，昨晚睡得怎么样？", side:"left"},
+{time:"07:44", sender:"玩具熊", text:"还好吧，你呢？", side:"right"},
+{time:"07:44", sender:"小徐", text:"我也差不多，困得不行", side:"left"},
+{time:"07:46", sender:"小徐", text:"我跟你说说宝亚保健的事吧", side:"left"},
+{time:"07:46", sender:"小徐", text:"我是之前的员工，之前在论坛帖子里也已经自证了", side:"left"},
+{time:"07:46", sender:"玩具熊", text:"嗯，谢谢", side:"right"},
+{time:"07:48", sender:"小徐", text:"王老板挺疯狂的，真的", side:"left"},
+{time:"07:48", sender:"小徐", text:"公司做到顶了，也赚不到钱", side:"left"},
+{time:"07:48", sender:"小徐", text:"据说他女儿最近也生病了，急需钱", side:"left"},
+{time:"07:51", sender:"玩具熊", text:"……", side:"right"},
+{time:"07:53", sender:"小徐", text:"其实有些事我也是听别人说的，但大体意思不会错", side:"left"},
+{time:"07:53", sender:"小徐", text:"一开始王老板祭牛祭羊，在邪神面前祈求好运", side:"left"},
+{time:"07:53", sender:"小徐", text:"后来他慢慢发现不管用了，献祭人的阳寿更好", side:"left"},
+{time:"07:53", sender:"小徐", text:"你也知道，他是保健公司的老板，老年人就是他手里的资源", side:"left"},
+{time:"07:54", sender:"小徐", text:"老年人很容易骗", side:"left"},
+{time:"07:54", sender:"小徐", text:"他抓这个机会下手……真的，让人心里发冷", side:"left"},
+{time:"07:54", sender:"system", text:"网络卡顿", side:"system"},
+{time:"07:54", sender:"system", text:"网络异常，需要验证你不是机器人才能继续聊天", side:"system"},
+{time:"07:55", sender:"小徐", text:"公司以前组织过 VIP 游", side:"left"},
+{time:"07:55", sender:"小徐", text:"表面上是带他们去旅游，吃喝玩乐", side:"left"},
+{time:"07:55", sender:"小徐", text:"其实都是为了那些献祭的安排", side:"left"},
+{time:"07:55", sender:"玩具熊", text:"居然是因为这个才会有 VIP 游……我懂了", side:"right"},
+{time:"07:55", sender:"玩具熊", text:"我妈也是", side:"right"},
+{time:"07:55", sender:"玩具熊", text:"虽然她不算很老，但我爸不常在她身边，我也去上学，不常在她身边，她缺少陪伴", side:"right"},
+{time:"07:55", sender:"玩具熊", text:"容易被推销的人说动", side:"right"},
+{time:"07:58", sender:"小徐", text:"所以你一直担心她吧", side:"left"},
+{time:"07:58", sender:"玩具熊", text:"是啊", side:"right"},
+{time:"07:58", sender:"玩具熊", text:"看她被骗，我心里一直堵着", side:"right"},
+{time:"08:01", sender:"小徐", text:"你挺勇敢的，谢谢你发帖子", side:"left"},
+{time:"08:01", sender:"小徐", text:"真的，尤其现在王老板越狱出来了……", side:"left"},
+{time:"08:01", sender:"小徐", text:"要不我们见面聊聊吧，有些事情不好在网络上说", side:"left"},
+{time:"08:04", sender:"玩具熊", text:"啊……", side:"right"},
+{time:"08:04", sender:"玩具熊", text:"可能不太行", side:"right"},
+{time:"08:04", sender:"玩具熊", text:"抱歉，最近学校事情很多", side:"right"},
+{time:"08:05", sender:"小徐", text:"也行，再说吧", side:"left"}
+];
+
+let i=0, blocked=false;
+
+function displayMsg(msg){
+  const p = document.createElement('div');
+  p.className = 'msg ' + (msg.side==='system'? 'system': msg.side);
+
+  if(msg.side!=='system'){
+    const t = document.createElement('div');
+    t.className='time';
+    t.textContent = msg.time;
+    p.appendChild(t);
+  }
+
+  const text = document.createElement('div');
+  text.textContent = msg.text;
+  p.appendChild(text);
+
+  // ✅ 在这里加上“已送达”
+  if(msg.side==='right'){   // 只有自己发的才显示
+    const status = document.createElement('div');
+    status.className = 'status';
+    status.textContent = '已送达';
+    status.style.fontSize = '11px';
+    status.style.color = 'rgba(255,255,255,0.8)';
+    status.style.textAlign = 'right';
+    status.style.marginTop = '2px';
+    p.appendChild(status);
+  }
+
+  chatBody.appendChild(p);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+
+function nextMsg(){
+  if(i>=messages.length) {
+    // 最后一条消息后显示发光按钮
+    const btn = document.createElement('button');
+    btn.className = 'glow-button';
+    btn.textContent = '下一章：NIGHTMARE';
+    btn.onclick = ()=>{ window.location.href='5mom.html'; }
+    nextBtnContainer.appendChild(btn);
+    return;
+  }
+  const msg = messages[i];
+  if(blocked) return;
+  if(msg.side==='system' && msg.text.includes('验证')) {
+    blocked = true;
+    sliderContainer.style.display='block';
+  }
+  displayMsg(msg);
+  i++;
+  setTimeout(nextMsg, 1200);
+}
+
+nextMsg();
+
+// 滑块验证
+let dragging=false;
+handle.addEventListener('mousedown',()=>{dragging=true});
+handle.addEventListener('touchstart',()=>{dragging=true});
+document.addEventListener('mouseup',()=>{
+  if(dragging){
+    dragging=false;
+    if(parseInt(handle.style.left) >= slider.offsetWidth-22){
+      sliderMsg.textContent="验证成功！网络恢复。网络密码：112233";
+      setTimeout(()=>{
+        sliderContainer.style.display='none';
+        blocked=false;
+        nextMsg();
+      },2000);
+    }else{
+      handle.style.left='0px';
+      sliderMsg.textContent="";
+    }
+  }
+});
+document.addEventListener('touchend',()=>{
+  if(dragging){
+    dragging=false;
+    if(parseInt(handle.style.left) >= slider.offsetWidth-22){
+      sliderMsg.textContent="验证成功！网络恢复。网络密码：112233";
+      setTimeout(()=>{
+        sliderContainer.style.display='none';
+        blocked=false;
+        nextMsg();
+      },2000);
+    }else{
+      handle.style.left='0px';
+      sliderMsg.textContent="";
+    }
+  }
+});
+document.addEventListener('mousemove',(e)=>{
+  if(dragging){
+    const rect=slider.getBoundingClientRect();
+    let newLeft=e.clientX-rect.left-10;
+    newLeft=Math.max(0,Math.min(newLeft,slider.offsetWidth-20));
+    handle.style.left=newLeft+'px';
+  }
+});
+document.addEventListener('touchmove',(e)=>{
+  if(dragging){
+    const rect=slider.getBoundingClientRect();
+    let touch=e.touches[0];
+    let newLeft=touch.clientX-rect.left-10;
+    newLeft=Math.max(0,Math.min(newLeft,slider.offsetWidth-20));
+    handle.style.left=newLeft+'px';
+  }
+});
+</script>
+</body>
+</html>

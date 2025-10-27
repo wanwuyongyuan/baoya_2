@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二章：AWAKE</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --top-blue:#8fbfff; /* 上方柔和蓝 */
+    --mid-blue:#cfe8ff; /* 渐变中间色 */
+    --white:#ffffff;
+    --text-color:#12202b;
+    --container-width:760px;
+  }
+  html,body{height:100%;margin:0;font-family:'Noto Serif SC', serif;}
+
+  /* 基础背景：上蓝下白 + 轻微斜线流动感 */
+  body{
+    background:
+      radial-gradient(1200px 420px at 50% 12%, rgba(255,255,255,0.45), rgba(255,255,255,0) 35%),
+      linear-gradient(to bottom, var(--top-blue) 0%, var(--mid-blue) 40%, var(--white) 60%, var(--white) 100%);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .wrap{min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:100px 20px 140px 20px;box-sizing:border-box;position:relative;overflow:hidden}
+
+  /* 顶部光晕和底部暗角通过伪元素实现 */
+  .wrap::before{
+    content:'';position:absolute;left:50%;top:6%;transform:translateX(-50%);width:80vmin;height:40vmin;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0) 60%);
+    pointer-events:none;mix-blend-mode:screen;filter:blur(18px);
+  }
+  .wrap::after{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:40vh;pointer-events:none;background:radial-gradient(ellipse at center bottom, rgba(0,0,0,0.08), rgba(0,0,0,0.0) 60%);mix-blend-mode:multiply;}
+
+  /* 细微噪点覆盖（SVG 嵌入） */
+  .grain{
+    position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.12' /></svg>");opacity:0.18;mix-blend-mode:overlay;}
+
+  .card{
+    width:100%;max-width:var(--container-width);background:transparent; /* 内容透明以显示背景 */
+    color:var(--text-color);font-size:1.18rem;line-height:1.9;letter-spacing:0.02em;position:relative;z-index:2;padding:12px 18px;border-radius:8px;
+  }
+
+  /* 漂浮微光点 */
+  .particles{position:absolute;inset:0;pointer-events:none;z-index:1}
+  .particle{position:absolute;width:8px;height:8px;background:rgba(255,255,255,0.9);border-radius:50%;filter:blur(6px);opacity:0.9;transform:translateY(0);}
+  .particle.p1{left:12%;top:40%;animation:floatUp 6s infinite ease-in-out 0s;}
+  .particle.p2{left:78%;top:30%;width:10px;height:10px;animation:floatUp 7.2s infinite ease-in-out 1s;}
+  .particle.p3{left:45%;top:55%;width:6px;height:6px;animation:floatUp 5.6s infinite ease-in-out 0.6s;}
+  .particle.p4{left:30%;top:20%;width:5px;height:5px;animation:floatUp 8s infinite ease-in-out 2s;}
+
+  @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0.9}50%{transform:translateY(-18px) scale(1.08);opacity:0.6}100%{transform:translateY(0) scale(1);opacity:0.9}}
+
+  .line{opacity:0; transform: translateY(10px); transition:opacity .7s ease, transform .7s ease; margin:14px 0;}
+  .line.visible{opacity:1; transform:none}
+  .final-block{margin-top:28px}
+  .question{font-weight:700;margin-top:22px;font-size:1.15em}
+  .answer{font-weight:700;color:#0b2340;margin-top:8px;display:inline-block}
+
+  /* 微妙的光感边缘 */
+  .card::after{content:'';position:fixed;left:0;right:0;top:0;height:40vh;pointer-events:none;background:linear-gradient(rgba(255,255,255,0.04), rgba(255,255,255,0));mix-blend-mode:overlay}
+
+  /* 小屏幕调整 */
+  @media (max-width:600px){ .card{font-size:1rem;padding:0 6px} }
+  /* 发光按钮样式（与第一章保持一致风格） */
+    .glow-button {
+      display: inline-block;
+      margin: 18px auto 0 auto;
+      padding: 10px 22px;
+      background: #ffffff;
+      color: #0b2340;
+      border: none;
+      border-radius: 999px;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.6);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: block; text-align:center;
+    }
+    .glow-button:hover { transform: translateY(-3px); box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <article class="card" id="card">
+      <!-- 文本行会逐行插入 -->
+    </article>
+  </div>
+
+<script>
+(function(){
+  const lines = [
+    '夜已经很深，房间里只剩下寂静。',
+    '女孩猛地从床上坐起，从噩梦中醒来，回到现实。',
+    '奚妍怔怔地在床上坐着，刚才噩梦的碎片还在她的脑中闪烁不去。',
+    '她翻了个身，又闭上眼，却怎么也睡不着。',
+  
+    '屋里很安静，只有墙上钟表转动时轻轻的滴答声。',
+    '奚妍叹了口气，掀开被子，赤脚踩在冰凉的地板上。',
+    '她似感受不到寒意一样，走到书桌前，手指轻轻碰到电脑边缘。',
+    '屏幕的冷光渐渐映在她的脸上，照出她微微紧张的神情。',
+    '她低头看着屏幕，眼里闪过一丝迷茫和期待。'
+  ];
+
+  const container = document.getElementById('card');
+  let i = 0;
+
+  function showNextLine(){
+    if(i < lines.length){
+      const p = document.createElement('p');
+      p.className = 'line';
+      p.textContent = lines[i];
+      container.appendChild(p);
+      requestAnimationFrame(()=>{ p.classList.add('visible'); });
+      i++;
+      setTimeout(showNextLine, 900);
+    } else {
+      setTimeout(showFinalQuestion, 900);
+    }
+  }
+
+  function showFinalQuestion(){
+    const final = document.createElement('div');
+    final.className = 'final-block';
+
+    const ans = document.createElement('div');
+    ans.className = 'answer';
+    final.appendChild(ans);
+    container.appendChild(final);
+
+    // 淡入问题
+    requestAnimationFrame(()=>{
+      q.style.opacity = 0;
+      q.style.transition = 'opacity .6s ease';
+      q.style.opacity = 1;
+    });
+
+    // 延迟显示按钮
+    setTimeout(function(){
+      const btn = document.createElement('button');
+      btn.className = 'glow-button';
+      btn.textContent = '查看电脑';
+      btn.onclick = function(){
+        window.location.href = '3computer.html';
+      };
+      final.appendChild(btn);
+    }, 800);
+  }
+
+  // 启动叙事
+  setTimeout(showNextLine, 500);
+})();
+</script>
+
+</body>
+</html>

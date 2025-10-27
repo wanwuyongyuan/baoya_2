@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秘密献祭场演出</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at center, #3b2f1a 0%, #1e1407 80%);
+    color: #f5e7c4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 30px;
+    line-height: 1.8;
+    font-size: 19px;
+    user-select: none;
+    overflow-x: hidden;
+    cursor: pointer;
+}
+
+#story {
+    max-width: 900px;
+    text-align: left;
+    width: 100%;
+}
+
+p {
+    margin: 12px 0;
+    opacity: 0;
+    transition: opacity 0.8s;
+}
+
+.highlight {
+    font-weight: bold;
+}
+
+.direction-choices {
+    margin-top: 20px;
+    text-align: center;
+    display: none;
+}
+
+.choice {
+    display: inline-block;
+    margin: 0 15px;
+    padding: 8px 20px;
+    border: 1px solid #edcb77;
+    border-radius: 5px;
+    color: #edcb77;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+.choice:hover {
+    background: #edcb77;
+    color: #3b2f1a;
+}
+</style>
+</head>
+<body>
+<div id="story">
+  <p>我们<strong>左转</strong>、<strong>右转</strong>，再<strong>左转</strong>，每一步都像踩在空气凝固的泥浆里。</p>
+  <p>每走一步，空气越发稠重，像是要凝成实质。</p>
+  <p>终于，前方石壁尽头的光亮晃动着，我们找到了巨大的献祭场，中央矗立着古老的神台。火光照亮四周，阴影扭曲，仿佛吞噬着空气。神台上的邪神的身形扭曲，既像婴儿，又似某种恐怖的野兽，它有着锋利的牙齿、空洞而饥渴的眼神，恐怖不已。</p>
+  <p>一个满头白发、胡子斑驳的男人跪在神台前，怀里抱着一具昏迷的女人。</p><br>
+  <p>“……” <br><br>我几乎窒息。</p>
+  <p>小徐低声说道：“王老板果然逃出来了。”</p>
+  <p>这时只见那女人从男子怀中滑落，她面色苍白奄奄一息，手腕处已经被放血。<br>我的心口像被重物压住，呼吸急促。</p><br>
+  <p>“妈妈！” <br><br>我情不自禁地喊出声，冲了过去。</p>
+  <p>男人缓缓抬头，那张脸，我太熟悉了——是<strong>爸爸</strong>，也是他们口中的王老板。</p><br>
+  <p>小徐倒吸一口冷气，声音颤抖：“你……你就是王老板的女儿……你是王奚妍。”</p><br>
+
+  <p>王奚妍，也就是我，并没有理会小徐。<br>我的动作坚决而迅速，眼神冷冽。<br>我握紧拳头，直逼父亲。</p><br>
+  <p>我从父亲手中夺过那把奇形的仪式刀，那刀上的纹路与邪神身上的符文一致。</p><br>
+  <p>“你真的献祭了妈妈！是你毁了一切！”我嘶吼道。</p><br>
+  <p>父亲猛然意识到我的意图，脸色震惊，连忙挥刀挡下。</p>
+ <p id="grabKnife" style="color:#ffd966; cursor:pointer; text-decoration:underline; font-weight:bold;">
+    夺刀！
+</p>
+</div>
+
+<script>
+const grabKnife = document.getElementById('grabKnife');
+let readyToClick = false;
+let timer;
+
+grabKnife.addEventListener('click', () => {
+    if (!readyToClick) {
+        alert('请在 1 秒内再次点击夺刀！'); // 提示玩家限时点击
+        readyToClick = true;
+        timer = setTimeout(() => {
+            readyToClick = false; // 超过1秒取消计时
+        }, 1000);
+    } else {
+        clearTimeout(timer);
+        grabKnife.textContent = '夺刀成功！';
+        grabKnife.style.color = '#edcb77';
+        readyToClick = false;
+
+        // 直接跳转到下一段剧情
+        window.location.href = '11end.html';
+    }
+});
+</script>
+
+<script>
+// 逐行显示文本
+const paragraphs = document.querySelectorAll('#story p');
+let index = 0;
+function showNextParagraph() {
+    if (index < paragraphs.length) {
+        paragraphs[index].style.opacity = 1;
+        index++;
+        setTimeout(showNextParagraph, 1100);
+    }
+}
+showNextParagraph();
+</script>

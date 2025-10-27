@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>洞穴机关快速点击</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at center, #3b2f1a 0%, #1e1407 80%);
+    color: #f5e7c4;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    line-height: 1.8;
+    min-height: 100vh;
+    justify-content: flex-start;
+
+    font-size: 19px; /* 改成你想要的大小 */
+}
+
+.story-section {
+    margin-bottom: 30px;
+    max-width: 900px;
+    text-align: left;
+    align-self: center;
+}
+
+.highlight {
+    color: #edcb77; /* 特殊黄色，但不刺眼 */
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 禁止选中文字 */
+body, .story-section, .highlight {
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE10+ */
+    user-select: none;         /* 标准 */
+}
+
+</style>
+</head>
+<body>
+
+<!-- 第一段剧情 -->
+<div class="story-section" id="story1">
+<p>
+我正盯着山洞里的阴影，突然黑暗中钻出一个人影。那个男子长相极其丑陋，眼神里带着说不清的疯狂。<br><br>
+小田对我和小骏说：“……他就是大祭司”。<br>
+丑陋的大祭司开口，他的声音沙哑而阴冷：“呵呵……你们这些小东西，多么香甜，多么纯净……快献给我吧，你们的阳寿，鲜血，都可以……让我和祂开心……”<br>
+言语里带着恶心的贪婪和变态，让人心底发凉。
+</p>
+<p>
+心底一阵惊恐，大家纷纷后退。<br>
+小徐拉着我后退：“奚妍……”
+</p>
+<p>
+情急之下，我忽然注意到墙壁上、石柱间隐隐透出不同寻常的纹路和凹陷。<br><br>
+我连忙压低声音，急切地告诉同伴——
+<br><br>
+<span id="trigger" class="highlight">“大家快看，这里……这里的石柱不稳！”</span>
+</p>
+</div>
+
+<!-- 机关触发后的剧情 -->
+<!-- 机关触发后的剧情 -->
+<div class="story-section" id="story2" style="display:none;">
+  <p>
+    巨大的石柱轰然落下，重重砸中了大祭司。<br>
+    大祭司当场被压得动弹不得。大家愣住，心里一阵翻涌。可是刚才生死攸关，我们也不得不这样做，我们只能硬着头皮继续前进。<br><br>
+    我们本想赶紧离开这个石室，却发现门口的金属门被牢牢锁上。无奈之下，我们只能强忍着恶心，互相压抑着心里的恐惧，缓缓走向大祭司的尸体。
+  </p>
+  <p>
+    我蹲下身找到了一把钥匙，以及一个纸张发黄、墨迹斑驳的笔记本。
+  </p>
+  <p>
+    我们翻开他身上的日记本，纸张发黄，墨迹斑驳，上面记载着每一次所谓“纯洁药引”的流转情况，这些都是大祭司曾杀害过的女生。<br><br>
+    小徐对小田低声说：“还记得吗，王老板说药引必须是处女。”<br><br>
+    我们都原以为邪神是规定的纯洁药引，却没想到这其中还有如此恐怖之事……<br>
+    一瞬间，心头涌起的寒意让人几乎窒息。小田和小徐曾是生还者，她们面色惨白。我的手也微微颤抖，心底的恶心和恐惧交织，让我几乎无法直视那些文字。
+  </p>
+
+  <!-- 文字式点击跳转，初始隐藏 -->
+ <span id="viewNotebook" style="display:none; color:#ffd966; cursor:pointer;">
+    “走吧——”我攥紧了钥匙。
+</span>
+
+</div>
+
+
+<script>
+const story2 = document.getElementById('story2');
+const viewNotebook = document.getElementById('viewNotebook');
+
+const trigger = document.getElementById('trigger');
+let clickCount = 0;
+const maxClicks = 15;
+
+// 点击高亮文字触发小游戏
+trigger.addEventListener('click', () => {
+    alert('请快速点击屏幕！');
+
+    function handleScreenClick() {
+        clickCount++;
+        if (clickCount >= maxClicks) {
+            // 移除监听
+            window.removeEventListener('click', handleScreenClick);
+            window.removeEventListener('touchstart', handleScreenClick);
+
+            // 显示第二段剧情和查看日记本文字
+            document.getElementById('story1').style.display = 'none';
+            story2.style.display = 'block';
+            viewNotebook.style.display = 'inline';
+        }
+    }
+
+    window.addEventListener('click', handleScreenClick);
+    window.addEventListener('touchstart', handleScreenClick);
+});
+
+// 点击文字跳转日记页面
+viewNotebook.addEventListener('click', () => {
+    window.location.href = '9riji.html';
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最后的钥匙机关</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Noto Serif SC', serif;
+  background: radial-gradient(circle at center, #3b2f1a 0%, #1e1407 80%);
+  color: #f5e7c4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  line-height: 1.8;
+  font-size: 19px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.story {
+  max-width: 780px;
+  text-align: center;
+  margin-bottom: 60px;
+  transition: opacity 1s;
+  min-height: 400px;
+}
+
+#key {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #edcb77;
+  border: 1px solid rgba(237,203,119,0.5);
+  border-radius: 6px;
+  cursor: grab;
+  background: rgba(60, 47, 26, 0.3);
+  transition: transform 0.2s;
+}
+#key:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+#lockhole {
+  width: 100px;
+  height: 140px;
+  border: 2px solid rgba(255,255,200,0.3);
+  border-radius: 50px / 70px;
+  background: rgba(0,0,0,0.3);
+  margin-top: 40px;
+  text-align: center;
+  line-height: 140px;
+  color: rgba(255,255,255,0.2);
+  font-size: 14px;
+}
+
+#lockhole.glow {
+  border-color: #ffd966;
+  box-shadow: 0 0 20px #ffd966;
+  color: #ffd966;
+  transition: 0.5s;
+}
+
+.fade-line {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.fade-line.show {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="story" id="story">
+  <p>那串钥匙在我的掌心。</p>
+  <p>我抬起手中的<span id="key" draggable="true">钥匙</span>。</p>
+  <p>（将钥匙放入门锁）</p>
+</div>
+
+<div id="lockhole">锁孔</div>
+
+<audio id="unlockSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_15f3031b93.mp3?filename=unlock-door-6042.mp3"></audio>
+
+<script>
+const key = document.getElementById('key');
+const lockhole = document.getElementById('lockhole');
+const story = document.getElementById('story');
+const sound = document.getElementById('unlockSound');
+
+key.addEventListener('dragstart', e => {
+  e.dataTransfer.setData('text/plain', 'key');
+  setTimeout(()=> key.style.opacity = '0.5', 0);
+});
+
+key.addEventListener('dragend', () => {
+  key.style.opacity = '1';
+});
+
+lockhole.addEventListener('dragover', e => {
+  e.preventDefault();
+  lockhole.classList.add('glow');
+});
+
+lockhole.addEventListener('dragleave', () => {
+  lockhole.classList.remove('glow');
+});
+
+lockhole.addEventListener('drop', e => {
+  e.preventDefault();
+  const data = e.dataTransfer.getData('text/plain');
+  if (data === 'key') {
+    lockhole.textContent = '咔哒——';
+    sound.play();
+
+    story.style.opacity = '0';
+    lockhole.classList.remove('glow');
+
+    setTimeout(() => {
+      const lines = [
+        '厚重的铁门缓缓开启。',
+        '几道冷风灌入，火光摇曳，映得我们脸色惨白。',
+        '空气里夹着湿土和霉味，让人忍不住屏住呼吸，我咳嗽不止。',
+        '门外是蜿蜒的石阶和昏暗的通道。',
+        '我们小心前行，终于看到了出口的光。',
+        '洞口聚着一群来雾山旅游的 VIP 老年人，失去了导游的他们不知道下一步该做什么。',
+        '小骏低声问我：“奚妍，这里……有你妈妈吗？”',
+        '“没有……”我紧握双拳，声音哽咽。',
+        '小田上前对我们低声说：“要不我带他们先走？”',
+        '这时有些老人也认出了她。',
+        '“好，你路感最好。”小徐道。',
+        '小田点点头，领着那些 VIP 老年人消失在雾中。',
+        '现在只剩我们三人。',
+        '我们深吸一口气，重新踏入山洞。'
+      ];
+
+      story.innerHTML = '';
+      lockhole.style.display = 'none';
+      story.style.opacity = '1';
+
+      // 一行一行出现
+      let delay = 0;
+      lines.forEach(line => {
+        const p = document.createElement('p');
+        p.textContent = line;
+        p.classList.add('fade-line');
+        story.appendChild(p);
+        setTimeout(() => p.classList.add('show'), delay);
+        delay += 1100;
+      });
+
+    }, 1500);
+  }
+});
+</script>
+
+</body>
+</html>

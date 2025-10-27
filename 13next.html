@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>13 - 逃出雾山</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1f 100%);
+    color: #ffffff;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+/* 星光动画 */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* 内容样式 */
+.story-wrapper {
+    position: relative;
+    z-index: 5;
+    max-width: 900px;
+    text-align: left;
+}
+
+p {
+    margin: 12px 0;
+    line-height: 1.8;
+}
+
+/* 白幕淡入 */
+/* 白幕淡入 */
+.fade-screen {
+    position: fixed;
+    inset: 0;
+    background: #fffafc;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 3s ease;
+    z-index: 10;
+}
+
+/* 添加 .show 类控制淡入 */
+.fade-screen.show {
+    opacity: 1;
+}
+
+
+/* 最终感谢文字 */
+.final-thanks {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #ac7bb9;
+    opacity: 0;
+    z-index: 11;
+    line-height: 1.8;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="story-wrapper">
+    <p>小徐、小骏以及奚妍妈妈终于从塌陷的洞穴中逃了出来。</p>
+    <p>山洞之外星光点点，夜色静谧。</p>
+    <p>经历了恐惧和混乱，外面的空气仿佛格外清新。</p>
+    <p>小骏蹭走自己脸上的灰，深深吸了一口气。</p>
+    <p>夜风轻轻地吹，仿佛一切都那么平静，但，故事依旧没有结束。</p>
+</div>
+
+<!-- 白幕和感谢文字 -->
+<div id="fadeScreen" class="fade-screen"></div>
+<div id="thanksFinal" class="final-thanks">
+    <div id="thanksLine1"></div>
+    <div id="thanksLine2"></div>
+</div>
+
+<script>
+// 创建随机星星
+for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDuration = (2 + Math.random() * 2) + 's';
+    document.body.appendChild(star);
+}
+
+// 20 秒后白幕淡入
+setTimeout(() => {
+    document.getElementById('fadeScreen').classList.add('show');
+}, 16000);
+
+// 22 秒后开始显示感谢文字
+setTimeout(() => {
+    const line1 = "感谢游玩";
+    const line2 = "万物永远制作";
+    const line1El = document.getElementById('thanksLine1');
+    const line2El = document.getElementById('thanksLine2');
+    let i = 0;
+
+    function typeLine(el, text, callback) {
+        let idx = 0;
+        const timer = setInterval(() => {
+            el.textContent += text[idx];
+            idx++;
+            if (idx === text.length) {
+                clearInterval(timer);
+                if (callback) callback();
+            }
+        }, 150); // 每个字出现间隔 150ms
+    }
+
+    // 依次显示两行
+    typeLine(line1El, line1, () => {
+        typeLine(line2El, line2);
+    });
+
+    document.getElementById('thanksFinal').style.opacity = 1;
+}, 17000);
+</script>
+
+</body>
+</html>
