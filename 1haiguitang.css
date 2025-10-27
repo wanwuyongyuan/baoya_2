@@ -197,7 +197,7 @@ body {
     border: none;
     border-radius: 8px;
     font-family: 'Noto Serif SC', serif;
-    font-size: 1.2em;          /* 字体放大 */
+    font-size: 1.0em;          /* 字体放大 */
     color: #4a3219;
     cursor: pointer;
     transition: all 0.2s ease;
