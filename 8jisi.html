@@ -96,16 +96,15 @@ body, .story-section, .highlight {
 <script>
 const story2 = document.getElementById('story2');
 const viewNotebook = document.getElementById('viewNotebook');
-
 const trigger = document.getElementById('trigger');
 let clickCount = 0;
 const maxClicks = 15;
 
 // 点击高亮文字触发小游戏
-trigger.addEventListener('click', () => {
+function startMiniGame() {
     alert('请快速点击屏幕！');
 
-    function handleScreenClick() {
+    function handleScreenClick(e) {
         clickCount++;
         if (clickCount >= maxClicks) {
             // 移除监听
@@ -119,14 +118,18 @@ trigger.addEventListener('click', () => {
         }
     }
 
-    window.addEventListener('click', handleScreenClick);
-    window.addEventListener('touchstart', handleScreenClick);
+    // 手机/PC通用事件
+    window.addEventListener('click', handleScreenClick, {passive: false});
+    window.addEventListener('touchstart', handleScreenClick, {passive: false});
+}
+
+// 使用 touchstart + click 都可触发
+trigger.addEventListener('click', startMiniGame);
+trigger.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // 防止滚动干扰
+    startMiniGame();
 });
 
-// 点击文字跳转日记页面
-viewNotebook.addEventListener('click', () => {
-    window.location.href = '9riji.html';
-});
 </script>
 
 
