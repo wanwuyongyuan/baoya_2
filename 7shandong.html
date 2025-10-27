@@ -19,25 +19,30 @@
     align-items: center;
   }
 
-  #text {
+#text {
     max-width: 90%;
     max-height: 90%;
     text-align: center;
-    font-size: 22px;
-    line-height: 1.8;
+    font-size: 18px; /* 手机上改小 */
+    line-height: 1.6;
     color: #958c70;
-
-    /* 增强凹陷雕刻效果 */
     text-shadow:
       3px 3px 5px rgba(0,0,0,0.9),
       -2px -2px 3px rgba(255,255,255,0.2),
       2px -2px 3px rgba(0,0,0,0.5),
       -3px 2px 4px rgba(0,0,0,0.6);
-
     z-index: 1;
     pointer-events: none;
     overflow-wrap: break-word;
-  }
+}
+
+@media screen and (max-width: 480px) {
+    #text {
+        font-size: 14px;  /* 手机屏幕缩小文字 */
+        line-height: 1.4;
+    }
+}
+
 
   canvas {
     position: absolute;
@@ -107,13 +112,13 @@ const triggerRatio = 0.65;
 
 // 擦拭函数
 function eraseAt(x, y) {
-    const radius = 45;
+    const radius = window.innerWidth < 480 ? 25 : 45; // 手机用25px
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
-    checkEraseProgress(); // 每次擦拭都检测面积
+    checkEraseProgress();
 }
 
 // 检测擦拭面积
@@ -150,18 +155,6 @@ canvas.addEventListener('touchmove', (e) => {
 });
 canvas.addEventListener('touchend', () => isDrawing = false);
 canvas.addEventListener('touchcancel', () => isDrawing = false);
-
-
-// 擦拭函数
-function eraseAt(x, y) {
-    const radius = 45;
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.closePath();
-}
-
 
 
 function showStory(){
