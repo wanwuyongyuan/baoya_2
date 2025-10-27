@@ -52,6 +52,32 @@
     z-index: 2;
   }
 
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  height: 140px;   /* 明确状态条高度 */
+  z-index: 1000;
+}
+
+#status-img {
+  height: 130px;   /* 明确图片高度 */
+  width: auto;     /* 保持比例 */
+  image-rendering: pixelated; /* 保持像素感，避免模糊 */
+  margin-right: 8px;
+}
+
+#status-text {
+  color: #fff;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+
 </style>
 </head>
 <body>
@@ -68,6 +94,12 @@
 信徒之命，与神之力，相缠不解，恍若水流之缠绵，岂可分割？<br><br>
 后来，人言此神已渐消失，时人不知其真貌，雾里迷离，惟有传闻犹存。<br>
 传闻此神其形如婴，牙尖如刃，常于雾中若隐若现，诡谲莫测。
+</div>
+
+<!-- 页面底部状态条 -->
+<div id="status-bar">
+  <img src="7shandong_Piskel.png" alt="主角" id="status-img">
+  <span id="status-text">你在此位置</span>
 </div>
 
 <canvas id="overlay"></canvas>
@@ -108,11 +140,11 @@ function drawOverlay() {
 // 擦拭逻辑
 let isDrawing = false;
 let erasedRatio = 0; // 擦拭比例
-const triggerRatio = 0.69; 
+const triggerRatio = 0.65; 
 
 // 擦拭函数
 function eraseAt(x, y) {
-    const radius = window.innerWidth < 480 ? 25 : 45; // 手机用25px
+    const radius = window.innerWidth < 480 ? 25 : 40; // 手机用25px
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);

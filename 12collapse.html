@@ -77,18 +77,50 @@ p {
     box-shadow: 0 0 5px #ffffff inset;
 }
 
+
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  height: 140px;   /* 明确状态条高度 */
+  z-index: 1000;
+}
+
+#status-img {
+  height: 130px;   /* 明确图片高度 */
+  width: auto;     /* 保持比例 */
+  image-rendering: pixelated; /* 保持像素感，避免模糊 */
+  margin-right: 8px;
+}
+
+#status-text {
+  color: #fff;
+  font-size: 18px;
+  white-space: nowrap;
+}
 </style>
 </head>
 <body>
-
 <div id="story">
-<p>奚妍妈妈睁开眼睛，看见众人，如梦初醒，她的眼神中充满慌乱和紧迫感。</p><br>
-<p>她回头看到已经开始坍塌的洞穴，沙哑着嗓子大声喊道：“快走，快出去！”</p>
-<p>小徐犹豫几秒……其实她也来不及多想……她连忙扶住奚妍妈妈——毕竟她是他们家唯一还活着的人，也是用奚妍的命换来的命。</p>
-<p>塌陷的尘土弥漫，空气里充满血腥和潮湿泥土的味道。风声和石块落地的声音，以及他们急促的呼吸交织在一起，洞内的每一秒都显得无比漫长。</p>
-<p>小徐和小骏带着奚妍妈妈迅速沿着熟悉的路线前进。</p>
-<p>他们必须选择正确的方向，才能躲避不断坍塌的山体。</p>
-<p>塌方的声响在头顶回荡，逼迫他们不停前行。</p>
+  <p>……</p>
+  <p>奚妍妈妈睁开眼睛，如梦初醒。</p>
+  <p>“我们快走吧！”小骏急切地说。</p>
+    <p>奚妍妈妈虚弱地站起身来。</p>
+    <p>她低头看见自己手腕上鲜红的血迹，与已死的女儿，脸色苍白如纸。</p>
+    <p>"……谢谢宝宝。" 她眼中含泪。</p>
+<p>他们身后传来轰隆隆的巨响，山洞开始剧烈震动。</p>
+  <p>巨大的石块噼里啪啦落下。</p>
+  <p>“我们快走，快出去！”小徐也来不及多想……她连忙扶住奚妍妈妈——毕竟她是他们家唯一还活着的人，也是用奚妍的命换来的命。</p>
+  <p>塌陷的尘土弥漫，空气里充满血腥和潮湿泥土的味道。风声和石块落地的声音，以及他们急促的呼吸交织在一起，洞内的每一秒都显得无比漫长。山洞塌方的声响在身后回荡，逼迫他们不停前行。</p>
+  <p>小徐和小骏带着奚妍妈妈迅速沿着熟悉的路线前进。</p>
+  <!-- 提示文本，先隐藏 -->
+  <p id="startChoices" style="color:#ffc2b8; font-weight:bold; cursor:pointer; display:none;">
+    他们必须选择正确方向……（点击开始）
+  </p>
 </div>
 
 <div class="direction-choices" id="directionChoices">
@@ -97,36 +129,53 @@ p {
     <p>（连续选择三步：右 → 左 → 右）</p>
 </div>
 
+<div id="status-bar">
+  <img src="12_Piskel.png" alt="主角" id="status-img">
+  <span id="status-text">你在此位置</span>
+</div>
+
+<canvas id="overlay"></canvas>
+
 <script>
-    // 逐行显示文本，只执行一次
+// 逐行显示文本
 const paragraphs = document.querySelectorAll('#story p');
 let index = 0;
-
 function showNextParagraph() {
-  if (index < paragraphs.length) {
-    paragraphs[index].style.opacity = 1;
-    index++;
-    setTimeout(showNextParagraph, 1200);
-  } else {
-    const choicesContainer = document.getElementById('directionChoices');
-    choicesContainer.style.display = 'block';
-    startStepTimer(); // 文本显示完后才启动倒计时
-  }
+    if (index < paragraphs.length) {
+        paragraphs[index].style.opacity = 1;
+        index++;
+        setTimeout(showNextParagraph, 1000); // 每行出现间隔1秒
+    } else {
+        // 文本显示完后显示提示文本
+        const startText = document.getElementById('startChoices');
+        startText.style.display = 'block';
+    }
 }
 showNextParagraph();
 
+// 先隐藏方向选择
+const choicesContainer = document.getElementById('directionChoices');
+choicesContainer.style.display = 'none';
+
+// 玩家点击加粗提示文本后显示选择
+const startText = document.getElementById('startChoices');
+startText.addEventListener('click', () => {
+    startText.style.display = 'none'; 
+    choicesContainer.style.display = 'block'; 
+    startStepTimer(); // 启动每步倒计时
+});
+
 // 方向选择逻辑
-const sequence = ['right','left','right']; // 正确顺序
+const sequence = ['right','left','right']; 
 let currentStep = 0;
 const choices = document.querySelectorAll('.choice');
-const timeLimit = 3000; // 每步3秒
+const timeLimit = 3000; 
 let stepTimer;
 
 function startStepTimer() {
   clearTimeout(stepTimer);
   stepTimer = setTimeout(() => {
     alert('时间耗尽！你被塌方困住了……\n请重试当前步骤。');
-    // 禁用按钮短暂恢复
     choices.forEach(c => c.disabled = true);
     setTimeout(() => {
       choices.forEach(c => c.disabled = false);
@@ -152,7 +201,6 @@ choices.forEach(choice => {
     }
   });
 });
-
 </script>
 
 </body>

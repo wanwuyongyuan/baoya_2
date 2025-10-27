@@ -38,6 +38,31 @@ body {
     cursor: pointer;
     touch-action: manipulation;
 }
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  height: 140px;   /* 明确状态条高度 */
+  z-index: 1000;
+}
+
+#status-img {
+  height: 130px;   /* 明确图片高度 */
+  width: auto;     /* 保持比例 */
+  image-rendering: pixelated; /* 保持像素感，避免模糊 */
+  margin-right: 8px;
+}
+
+#status-text {
+  color: #fff;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
 </style>
 </head>
 <body>
@@ -73,6 +98,13 @@ body {
 
 <span id="viewNotebook" style="display:none; color:#ffd966; cursor:pointer;">“走吧——”我攥紧了钥匙。</span>
 </div>
+
+<div id="status-bar">
+  <img src="8jisi_Piskel.png" alt="主角" id="status-img">
+  <span id="status-text">你在此位置</span>
+</div>
+
+<canvas id="overlay"></canvas>
 
 <script>
 const trigger = document.getElementById('trigger');

@@ -24,12 +24,12 @@ body {
 /* 星光动画 */
 .star {
     position: absolute;
-    width: 2px;
-    height: 2px;
+    width: 3px;
+    height: 3px;
     background: white;
     border-radius: 50%;
     opacity: 0;
-    animation: twinkle 3s infinite;
+    animation: twinkle 2s infinite;
 }
 
 @keyframes twinkle {
@@ -83,6 +83,31 @@ p {
     line-height: 1.8;
     text-align: center;
 }
+
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  height: 140px;   /* 明确状态条高度 */
+  z-index: 1000;
+}
+
+#status-img {
+  height: 130px;   /* 明确图片高度 */
+  width: auto;     /* 保持比例 */
+  image-rendering: pixelated; /* 保持像素感，避免模糊 */
+  margin-right: 8px;
+}
+
+#status-text {
+  color: #fff;
+  font-size: 18px;
+  white-space: nowrap;
+}
 </style>
 </head>
 <body>
@@ -102,6 +127,12 @@ p {
     <div id="thanksLine2"></div>
 </div>
 
+<div id="status-bar">
+  <img src="13_Piskel.png" alt="主角" id="status-img">
+  <span id="status-text"></span>
+</div>
+
+<canvas id="overlay"></canvas>
 <script>
 // 创建随机星星
 for (let i = 0; i < 100; i++) {
@@ -144,7 +175,7 @@ setTimeout(() => {
     });
 
     document.getElementById('thanksFinal').style.opacity = 1;
-}, 17000);
+}, 18000);
 </script>
 
 </body>

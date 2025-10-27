@@ -81,10 +81,30 @@ p {
   <p>我从父亲手中夺过那把奇形的仪式刀，那刀上的纹路与邪神身上的符文一致。</p><br>
   <p>“你真的献祭了妈妈！是你毁了一切！”我嘶吼道。</p><br>
   <p>父亲猛然意识到我的意图，脸色震惊，连忙挥刀挡下。</p>
- <p id="grabKnife" style="color:#ffd966; cursor:pointer; text-decoration:underline; font-weight:bold;">
+<p id="grabKnife" style="color:#ffd966; cursor:pointer; text-decoration:underline; font-weight:bold; display:none;">
     夺刀！
 </p>
 </div>
+<script>
+// 逐行显示文本（不包括夺刀按钮）
+const paragraphs = Array.from(document.querySelectorAll('#story p')).filter(p => p.id !== 'grabKnife');
+let index = 0;
+function showNextParagraph() {
+    if (index < paragraphs.length) {
+        paragraphs[index].style.opacity = 1;
+        index++;
+        setTimeout(showNextParagraph, 1100);
+    } else {
+        // 所有文本显示完毕后，显示夺刀按钮
+        const grabKnife = document.getElementById('grabKnife');
+        grabKnife.style.display = 'block';
+        grabKnife.style.opacity = 0;
+        setTimeout(() => grabKnife.style.opacity = 1, 50); // 淡入效果
+    }
+}
+showNextParagraph();
+
+</script>
 
 <script>
 const grabKnife = document.getElementById('grabKnife');
@@ -93,33 +113,26 @@ let timer;
 
 grabKnife.addEventListener('click', () => {
     if (!readyToClick) {
-        alert('请在 1 秒内再次点击夺刀！'); // 提示玩家限时点击
+        // 第一次点击
+        alert('请快速从你父亲手中夺刀！'); // 第一次点击提示
         readyToClick = true;
+
+        // 1秒后失败
         timer = setTimeout(() => {
-            readyToClick = false; // 超过1秒取消计时
+            alert('夺刀失败，你已被你父亲杀死！');
+            grabKnife.style.color = 'red';
+            grabKnife.style.cursor = 'default';
+            readyToClick = false;
         }, 1000);
     } else {
+        // 第二次点击（在1秒内），成功
         clearTimeout(timer);
-        grabKnife.textContent = '夺刀成功！';
+        alert('夺刀成功！');
         grabKnife.style.color = '#edcb77';
         readyToClick = false;
 
-        // 直接跳转到下一段剧情
+        // 跳转下一段剧情
         window.location.href = '11end.html';
     }
 });
-</script>
-
-<script>
-// 逐行显示文本
-const paragraphs = document.querySelectorAll('#story p');
-let index = 0;
-function showNextParagraph() {
-    if (index < paragraphs.length) {
-        paragraphs[index].style.opacity = 1;
-        index++;
-        setTimeout(showNextParagraph, 1100);
-    }
-}
-showNextParagraph();
 </script>

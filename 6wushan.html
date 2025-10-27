@@ -8,7 +8,7 @@
 body {
   margin: 0;
   padding: 20px;
-  background: linear-gradient(to bottom, #a0d6e0, #02859f);
+  background: linear-gradient(to bottom, #e6fffe, #8defd8);
   color: #0b2340; /* 文字颜色改成深色方便在浅色背景显示 */
   font-family: 'Noto Sans SC', sans-serif;
 }
@@ -32,14 +32,14 @@ body {
   }
 .fog {
     position: absolute;
-    color: #a0d6e0;
-    font-size: 350px; /* 字体更大 */
+    color: #f6f6f6cb;
+    font-size: 440px; /* 字体更大 */
     font-weight: bold;
     opacity: 1; /* 合法值 */
     text-shadow: 
       0 0 50px #a0d6e0, 
       0 0 100px #a0d6e0, 
-      0 0 150px #bee4ea; /* 更强发光 */
+      0 0 150px #fcfcfc; /* 更强发光 */
     cursor: grab;
     user-select: none;
     z-index: 100;
@@ -86,8 +86,8 @@ body {
 
 .fog {
   position: absolute;
-  color: rgba(200,255,255,0.4);
-  text-shadow: 0 0 40px rgba(255,255,255,0.7), 0 0 60px rgba(200,255,255,0.5);
+  color: rgba(231, 250, 250, 0.548);
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.764), 0 0 60px rgba(200,255,255,0.5);
   cursor: grab;
   user-select: none;
   z-index: 100;
@@ -164,7 +164,7 @@ body {
   padding: 40px;
   max-width: 800px;
   color: #fff;
-  font-size: 20px;
+  font-size: 23px;
   line-height: 1.9;
   font-family: 'Noto Serif SC', serif;
   border-radius: 10px;
@@ -216,6 +216,31 @@ body {
     display: inline-block; /* 保证文字按一行显示 */
 }
 
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  height: 140px;   /* 明确状态条高度 */
+  z-index: 1000;
+}
+
+#status-img {
+  height: 130px;   /* 明确图片高度 */
+  width: auto;     /* 保持比例 */
+  image-rendering: pixelated; /* 保持像素感，避免模糊 */
+  margin-right: 8px;
+}
+
+#status-text {
+  color: #fff;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
 
 
 </style>
@@ -263,6 +288,11 @@ body {
   <div class="fog" style="top:370px; left:55%; font-size:5.5em;">雾气</div>
 </div>
 
+<!-- 页面底部状态条 -->
+<div id="status-bar">
+  <img src="6wushan_Piskel.png" alt="主角" id="status-img">
+  <span id="status-text">你在此位置</span>
+</div>
 
 
 <script>
