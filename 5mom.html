@@ -200,19 +200,6 @@ body {
 </head>
 <body>
 
-<!-- 搜索卡片 -->
-<div id="search-card">
-  <div id="search-form">
-    <input type="text" id="search-input" placeholder="亲人失踪了怎么办？" autofocus>
-    <button id="search-button">搜索</button>
-  </div>
-  <div id="search-results">
-    <div class="result-item disabled" id="emergency-item">请拨打报警电话</div>
-    <div class="result-item">联系社区求助</div>
-    <div class="result-item">向朋友寻求帮助</div>
-  </div>
-</div>
-
 <!-- 左下角“查看照片” -->
 <div id="photo">查看桌面照片</div>
 
@@ -246,26 +233,6 @@ const emergencyItem = document.getElementById('emergency-item');
 const popup = document.getElementById('popup');
 const popupText = document.getElementById('popup-text');
 
-// 显示搜索结果
-function showResults() {
-  searchResults.style.display = 'block';
-}
-searchButton.addEventListener('click', showResults);
-searchInput.addEventListener('keydown', e => { if(e.key==='Enter'){ showResults(); } });
-
-// 点击紧急条目
-emergencyItem.addEventListener('click', () => {
-  openPopup('不行，不能报警。');
-});
-
-// 弹窗控制
-function openPopup(text){
-  popupText.textContent = text;
-  popup.style.display = 'block';
-}
-function closePopup(){
-  popup.style.display = 'none';
-}
 
 // 桌面图标跳转
 document.getElementById('photo').onclick = function(){
@@ -290,6 +257,9 @@ function updateClock(){
 }
 updateClock();
 
+window.onload = function() {
+    alert("我的妈妈不见了！");
+};
 
 </script>
 
