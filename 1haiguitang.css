@@ -14,62 +14,58 @@ body {
     padding: 10px;
 }
 
-/* 汤面容器 */
+.soup-top-container {
+    display: flex;
+    justify-content: center; /* 整个汤面居中 */
+    padding: 20px;           /* 两边留空白 */
+}
+
 .soup-top {
     background: #f4e4bc;
-    padding: 25px 20px;       /* 手机适配，容器内边距 */
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(139,69,19,0.25);
-    max-width: 100%;
-    margin: 40px auto;
-    text-align: center;
-    font-size: 1.2em;          /* 正文字号适中 */
-    line-height: 1.6;
+    padding: 30px 25px;       /* 上下30px，左右25px */
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(139,69,19,0.2);
+    max-width: 700px;         /* 最大宽度，不会撑满屏幕 */
+    width: 100%;               /* 小屏幕下自适应 */
     color: #4a3219;
-    background-image: repeating-linear-gradient(45deg,
-        transparent,
-        transparent 2px,
-        rgba(139,69,19,0.03) 2px,
-        rgba(139,69,19,0.03) 4px
-    );
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2em;
+    line-height: 1.6;
+    text-align: center;       /* 文字居中 */
+    word-break: break-word;   /* 小屏幕换行 */
 }
 
-/* 段落 */
 .soup-top p {
     margin: 12px 0;
-    word-break: break-word;   /* 防止文字溢出 */
 }
 
-/* 提示文字 */
-.soup-top p.hint {
-    font-size: 1em;
-    color: #8b4513;
-    font-style: italic;
-    margin-top: 15px;
-}
-
-/* 问题文字 */
-.soup-top p.question {
-    font-size: 1.15em;
-    margin-top: 20px;
-    color: #5a2d2d;
-}
-
-/* 加粗关键词 */
 .soup-top p .keywords strong {
-    font-size: 1.4em;         /* 关键词大一点，便于点击 */
+    font-size: 1.3em;          /* 关键词略大 */
     font-weight: 700;
     cursor: pointer;
-    padding: 0 4px;
-    transition: all 0.2s ease;
+    padding: 0 3px;
+    transition: all 0.3s ease;
 }
 
-.soup-top p .keywords strong:hover,
-.soup-top p .keywords strong:active {
-    transform: scale(1.1);
+.soup-top p .keywords strong:hover {
+    transform: scale(1.08);
     color: #a0522d;
     text-decoration: underline;
 }
+
+.soup-top p.question {
+    font-size: 1.1em;
+    margin-top: 15px;
+    color: #5a2d2d;
+}
+
+.soup-top p.hint {
+    font-size: 0.95em;
+    font-style: italic;
+    margin-top: 10px;
+    color: #8b4513;
+}
+
 
 /* QA 区域 */
 .qa-section {
@@ -97,7 +93,7 @@ body {
     text-decoration: none;
     padding: 8px 12px;
     border-radius: 6px;
-    font-size: 1.3em;
+    font-size: 1.35em;
     transition: all 0.2s ease;
 }
 
