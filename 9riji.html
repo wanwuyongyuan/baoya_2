@@ -15,15 +15,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: flex-start;       /* ✅ 从上开始排内容 */
+  min-height: 100vh;                 /* ✅ 改 height 为 min-height */
   line-height: 1.8;
   font-size: 19px;
   user-select: none;
-  overflow: hidden;
+  overflow-y: auto;                  /* ✅ 开启滚动 */
+  -webkit-overflow-scrolling: touch; /* ✅ iOS 平滑滚动 */
   padding: 60px;
   box-sizing: border-box;
-    margin-bottom: 120px;
+  padding-bottom: 160px;             /* ✅ 给底部状态栏留空间 */
 }
 
 .story {
