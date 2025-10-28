@@ -110,12 +110,16 @@ body {
 </div>
 
 <script>
-const key = document.getElementById('key');
+  const key = document.getElementById('key');
 const lockhole = document.getElementById('lockhole');
 const story = document.getElementById('story');
 const sound = document.getElementById('unlockSound');
 const statusImg = document.getElementById('status-img');
 
+let offsetX, offsetY; // 手机拖拽偏移
+let isTouchDragging = false;
+
+// ===== 桌面拖拽 =====
 key.addEventListener('dragstart', e => {
   e.dataTransfer.setData('text/plain', 'key');
   setTimeout(() => key.style.opacity = '0.5', 0);
@@ -131,81 +135,126 @@ lockhole.addEventListener('dragover', e => {
 lockhole.addEventListener('dragleave', () => {
   lockhole.classList.remove('glow');
 });
-
 lockhole.addEventListener('drop', e => {
   e.preventDefault();
   const data = e.dataTransfer.getData('text/plain');
   if (data === 'key') {
-    // 🔹 开锁反馈
-    lockhole.innerHTML = '<span style="font-size:20px; color:#ffe89e;">咔哒——</span>';
-    sound.play();
-    lockhole.classList.remove('glow');
-
-    // 🔹 替换状态条小图
-    statusImg.src = '9jisi1_Piskel.png';
-
-    // 🔹 隐藏锁孔 & 淡出原剧情
-    lockhole.style.display = 'none';
-    story.style.opacity = '0';
-
-    setTimeout(() => {
-      story.innerHTML = ''; // 清空旧内容
-      const lines = [
-        '厚重的铁门缓缓开启。',
-        '几道冷风灌入，火光摇曳，映得我们脸色惨白。空气中夹着土和血的腥味，我忍不住咳嗽。',
-        '我们小心前行，终于看到了出口的月光。',
-        '洞口聚着一群来雾山旅游的VIP老年人，失去了导游的他们不知道下一步该做什么。',
-        '小骏低声问我：“奚妍，这里……有你妈妈吗？”',
-        '“没有……”我紧握双拳，声音哽咽。',
-        '小田上前对我们低声说：“要不我带他们先走？”',
-        '这时有些老人也认出了她。',
-        '“好，你路感最好。”小徐道。',
-        '小田点点头，领着那些 VIP 老年人消失在雾中。',
-        '现在只剩我们三人。',
-        '<span id="toFinal" style="font-weight:bold; color:#ffd966; cursor:pointer;">我们深吸一口气，重新踏入山洞。</span>',
-        ' ',
-        ' ',
-        ' ',
-      ];
-
-      const frag = document.createDocumentFragment();
-      lines.forEach(line => {
-        const p = document.createElement('p');
-        p.className = 'fade-line';
-        p.style.textAlign = 'left';
-        p.innerHTML = line;
-        frag.appendChild(p);
-      });
-      story.appendChild(frag);
-
-      // 逐行淡入
-      requestAnimationFrame(() => {
-        const ps = story.querySelectorAll('.fade-line');
-        let idx = 0;
-        function revealOne() {
-          if (idx < ps.length) {
-            ps[idx].classList.add('show');
-            idx++;
-            setTimeout(revealOne, 700);
-          } else {
-            story.style.minHeight = '';
-            const toFinal = document.getElementById('toFinal');
-            if (toFinal) {
-              const goFinal = () => window.location.href = '10final.html';
-              toFinal.addEventListener('click', goFinal);
-              toFinal.addEventListener('touchend', goFinal);
-            }
-          }
-        }
-        story.style.opacity = '1';
-        revealOne();
-      });
-    }, 500); // 开锁淡出时间
+    unlockDoor();
   }
 });
 
+// ===== 手机触摸拖拽 =====
+key.addEventListener('touchstart', (e) => {
+  isTouchDragging = true;
+  const touch = e.touches[0];
+  const rect = key.getBoundingClientRect();
+  offsetX = touch.clientX - rect.left;
+  offsetY = touch.clientY - rect.top;
+  key.style.position = 'absolute';
+  key.style.zIndex = 1000;
+});
+
+key.addEventListener('touchmove', (e) => {
+  if (!isTouchDragging) return;
+  e.preventDefault(); // 阻止页面滚动
+  const touch = e.touches[0];
+  key.style.left = (touch.clientX - offsetX) + 'px';
+  key.style.top = (touch.clientY - offsetY) + 'px';
+});
+
+key.addEventListener('touchend', (e) => {
+  if (!isTouchDragging) return;
+  isTouchDragging = false;
+
+  const lockRect = lockhole.getBoundingClientRect();
+  const keyRect = key.getBoundingClientRect();
+
+  // 判断是否放在锁孔范围内（以中心点为准）
+  const keyCenterX = keyRect.left + keyRect.width / 2;
+  const keyCenterY = keyRect.top + keyRect.height / 2;
+
+  if (
+    keyCenterX > lockRect.left &&
+    keyCenterX < lockRect.right &&
+    keyCenterY > lockRect.top &&
+    keyCenterY < lockRect.bottom
+  ) {
+    unlockDoor();
+  } else {
+    // 放回原位置
+    key.style.left = '';
+    key.style.top = '';
+    key.style.position = '';
+    key.style.zIndex = '';
+  }
+});
+
+// ===== 鼠标点击缩放效果 =====
 key.addEventListener('mousedown', () => key.style.transform = 'scale(1.1)');
 key.addEventListener('mouseup', () => key.style.transform = 'scale(1)');
+
+// ===== 开锁函数 =====
+function unlockDoor() {
+  lockhole.innerHTML = '<span style="font-size:20px; color:#ffe89e;">咔哒——</span>';
+  sound.play();
+  lockhole.classList.remove('glow');
+  lockhole.style.display = 'none';
+  story.style.opacity = '0';
+  statusImg.src = '9jisi1_Piskel.png';
+
+  setTimeout(() => {
+    story.innerHTML = '';
+    const lines = [
+      '厚重的铁门缓缓开启。',
+      '几道冷风灌入，火光摇曳，映得我们脸色惨白。空气中夹着土和血的腥味，我忍不住咳嗽。',
+      '我们小心前行，终于看到了出口的月光。',
+      '洞口聚着一群来雾山旅游的VIP老年人，失去了导游的他们不知道下一步该做什么。',
+      '小骏低声问我：“奚妍，这里……有你妈妈吗？”',
+      '“没有……”我紧握双拳，声音哽咽。',
+      '小田上前对我们低声说：“要不我带他们先走？”',
+      '这时有些老人也认出了她。',
+      '“好，你路感最好。”小徐道。',
+      '小田点点头，领着那些 VIP 老年人消失在雾中。',
+      '现在只剩我们三人。',
+      '<span id="toFinal" style="font-weight:bold; color:#ffd966; cursor:pointer;">我们深吸一口气，重新踏入山洞。</span>',
+      ' ',
+      ' ',
+      ' ',
+    ];
+
+    const frag = document.createDocumentFragment();
+    lines.forEach(line => {
+      const p = document.createElement('p');
+      p.className = 'fade-line';
+      p.style.textAlign = 'left';
+      p.innerHTML = line;
+      frag.appendChild(p);
+    });
+    story.appendChild(frag);
+
+    requestAnimationFrame(() => {
+      const ps = story.querySelectorAll('.fade-line');
+      let idx = 0;
+      function revealOne() {
+        if (idx < ps.length) {
+          ps[idx].classList.add('show');
+          idx++;
+          setTimeout(revealOne, 700);
+        } else {
+          story.style.minHeight = '';
+          const toFinal = document.getElementById('toFinal');
+          if (toFinal) {
+            const goFinal = () => window.location.href = '10final.html';
+            toFinal.addEventListener('click', goFinal);
+            toFinal.addEventListener('touchend', goFinal);
+          }
+        }
+      }
+      story.style.opacity = '1';
+      revealOne();
+    });
+  }, 500);
+}
 
 </script>
 
