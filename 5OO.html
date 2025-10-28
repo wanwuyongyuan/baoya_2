@@ -6,147 +6,62 @@
 <title>OO聊天界面</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#eef4fc;
-    --panel:#fff;
-    --blue:#3399ff;
-    --muted:#666;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
-    display:flex;
-    height:100vh;
-    overflow:hidden;
-    background:var(--bg);
-  }
-  #friends {
-    width:160px;
-    background: var(--panel);
-    border-right:1px solid #ccc;
-    overflow-y:auto;
-    padding:10px;
-    box-sizing:border-box;
-  }
-  .friend {
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: #f9f9f9;
-    cursor:pointer;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .friend:hover { background: #e0f0ff; border-color: var(--blue); }
-  .friend.active { background: #d0e4ff; border-color: var(--blue); }
+:root{
+  --bg:#eef4fc;
+  --panel:#fff;
+  --blue:#3399ff;
+  --muted:#666;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Noto Sans SC','思源黑体','Microsoft YaHei',sans-serif;
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+  background:var(--bg);
+}
+#friends {
+  width:160px;
+  background: var(--panel);
+  border-right:1px solid #ccc;
+  overflow-y:auto;
+  padding:10px;
+}
+.friend {
+  padding:10px; margin-bottom:6px; border-radius:8px; border:1px solid #ccc;
+  background:#f9f9f9; cursor:pointer; transition: background 0.2s, border-color 0.2s;
+}
+.friend:hover{ background:#e0f0ff; border-color: var(--blue); }
+.friend.active{ background:#d0e4ff; border-color: var(--blue); }
 
-  #chat-container{
-    flex:1;
-    display:flex;
-    max-width:1100px;
-    flex-direction:column;
-    background:#f0f4fc;
-    position:relative;
-  }
-  #chat-header{ padding:12px; font-weight:700; background:#d0e0fc; border-bottom:1px solid #ccc; }
-  #chat-body{ flex:1; padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
-  .msg{ max-width:70%; padding:10px 14px; border-radius:12px; word-break:break-word; position:relative; box-shadow:0 2px 6px rgba(0,0,0,0.03); }
-  .left{ background:#fff; align-self:flex-start; }
-  .right{ background:var(--blue); color:#fff; align-self:flex-end; }
-  .system{ background:#cce0ff; color:#0055aa; text-align:center; align-self:center; font-size:14px; border-radius:6px; padding:6px 10px; }
-  .time{ font-size:12px; color:var(--muted); margin-bottom:4px; }
-  .status { font-size:11px; color:rgba(255,255,255,0.85); margin-top:6px; display:block; text-align:right; }
+#chat-container{
+  flex:1; display:flex; flex-direction:column; background:#f0f4fc;
+}
+#chat-header{ padding:12px; font-weight:700; background:#d0e0fc; border-bottom:1px solid #ccc; }
+#chat-body{ flex:1; padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.msg{ max-width:70%; padding:10px 14px; border-radius:12px; word-break:break-word; position:relative; box-shadow:0 2px 6px rgba(0,0,0,0.03);}
+.left{ background:#fff; align-self:flex-start; }
+.right{ background:var(--blue); color:#fff; align-self:flex-end; }
+.system{ background:#cce0ff; color:#0055aa; text-align:center; align-self:center; font-size:14px; border-radius:6px; padding:6px 10px; }
+.time{ font-size:12px; color:var(--muted); margin-bottom:4px; }
 
-  /* 小徐 正在输入指示 */
-  .typing {
-    align-self:flex-start;
-    font-style:italic;
-    color:#666;
-    padding:6px 10px;
-    border-radius:8px;
-    background:#fff;
-  }
-
-  /* 滑块验证 */
-  #slider-container{ display:none; margin:12px 0; background:#cce0ff; border:1px solid var(--blue); border-radius:12px; padding:12px; text-align:center; }
-  #slider{ width:80%; height:20px; background:var(--blue); margin:12px auto; border-radius:10px; position:relative; cursor:pointer; }
-  #slider-handle{ width:20px; height:20px; background:#fff; position:absolute; left:0; top:0; border-radius:50%; touch-action:none; }
-
-  /* 发光按钮 */
-  .glow-button {
-    display: inline-block;
-    margin: 18px auto 0 auto;
-    padding: 10px 22px;
-    background: #ffffff;
-    color: #0b2340;
-    border: none;
-    border-radius: 999px;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 1em;
-    cursor: pointer;
-    box-shadow: 0 0 16px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.6);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: block; text-align:center;
-  }
-  .glow-button:hover { transform: translateY(-3px); box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.8); }
-
-  /* OO 缩略图（底部） */
-  #oo-thumb {
-    position:fixed;
-    bottom:56px;
-    left:18px;
-    width:64px;
-    height:64px;
-    background:#fff;
-    border-radius:10px;
-    border:2px solid rgba(0,0,0,0.08);
-    box-shadow:0 6px 18px rgba(0,0,0,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    z-index:999;
-    font-weight:700;
-    color:var(--blue);
-  }
-
-  /* 单选对话模态 */
-  #choice-modal {
-    position:fixed;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    background:#fff;
-    border-radius:12px;
-    padding:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    z-index:2000;
-    display:none;
-    width:320px;
-    text-align:center;
-  }
-  #choice-modal button {
-    display:block;
-    width:100%;
-    margin-top:12px;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid var(--blue);
-    background:var(--blue);
-    color:#fff;
-    font-weight:700;
-    cursor:pointer;
-  }
-
-
+#email-full {
+  display: none;
+  position: fixed;
+  right:5%; bottom:50px;
+  width:90%; max-width:480px; max-height:80vh;
+  overflow-y:auto; background:#fff;
+  border:2px solid #3c2814; border-radius:8px; padding:16px; font-size:14px; z-index:1000;
+}
+#email-full button{ margin-top:12px; padding:8px 12px; border:none; border-radius:6px; background:var(--blue); color:#fff; cursor:pointer; }
 </style>
 </head>
 <body>
 
 <div id="friends">
   <h3>好友列表</h3>
-  <div class="friend active" data-chat="xiaoxu">小徐</div>
+  <div class="friend active">小徐</div>
   <div class="friend">宝宝</div>
   <div class="friend">LNsa陈</div>
   <div class="friend">万物永远</div>
@@ -155,234 +70,13 @@
 
 <div id="chat-container">
   <div id="chat-header">小徐</div>
-
-  <div id="chat-body">
-    <!-- 初始聊天消息由 JS 填充 -->
-  </div>
-
-  <div id="slider-container">
-    <div>系统提示：“网络异常，需要验证你不是机器人才能继续聊天。”</div>
-    <div id="slider">拖动滑块完成验证<div id="slider-handle"></div></div>
-    <div id="slider-msg"></div>
-  </div>
-
-  <div id="next-page-btn-container" style="text-align:center; margin:20px 0;"></div>
+  <div id="chat-body"></div>
 </div>
 
-<!-- OO 缩略图（底部左侧） -->
-<div id="oo-thumb">OO</div>
-
-<!-- 单选对话模态（只有一个可点选项） -->
-<div id="choice-modal">
-  <div style="font-weight:700; margin-bottom:8px;">选择一项：</div>
-  <button id="choice-btn">【我妈妈不见了！】</button>
-</div>
-
-
-
-<script>
-/* ---------- 基本元素 ---------- */
-const chatBody = document.getElementById('chat-body');
-const sliderContainer = document.getElementById('slider-container');
-const slider = document.getElementById('slider');
-const handle = document.getElementById('slider-handle');
-const sliderMsg = document.getElementById('slider-msg');
-const nextBtnContainer = document.getElementById('next-page-btn-container');
-
-const ooThumb = document.getElementById('oo-thumb');
-const choiceModal = document.getElementById('choice-modal');
-const choiceBtn = document.getElementById('choice-btn');
-
-
-
-/* ---------- 将初始消息显示出来（不复杂化） ---------- */
-window.addEventListener('DOMContentLoaded', ()=>{
-    startPanicMessaging();
-});
-
-
-/* ---------- 玩家要发送的碎句（按序） ---------- */
-const playerPanicMessages = [
-  "我妈妈不见了！",
-  "一定是那个 VIP 游的事，我看到她邮箱里的邮件了。",
-  "为什么她不跟我打个招呼啊？",
-  "对不起，我还是没能拦下她……",
-  "我要去雾山。你能给我个具体地图吗？",
-  "王老板一定是要干最后一票，他没什么好失去的了，我要去阻止他！"
-];
-
-/* ---------- 小徐后面的回复（按序） ---------- */
-const xiaoxuReplies = [
-  "天呐！你不要着急！",
-  "雾山那边路况非常不好，很难进出，你千万别冲动啊！",
-  "你走之前得带点装备啊，别莽！",
-  "……",
-  "算了，我跟你一起去。",
-  "你千万不要轻举妄动！",
-  "你先别急，我们要把那些参加 VIP 的老人都找到，对吗？",
-  "说实话，我和小田、小骏在制作一个钓鱼的官方页面，快做完了，你先别慌。",
-  "我们的想法是先通过假官网和一个假官方邮箱，让大家先退出 VIP，然后通知他们家属。我们还会以家属名义给他们寄点东西，让他们别那么孤单。",
-  "等我们把这些都做好了，再去雾山救人。",
-  "我们估计还要半个小时，你趁这会儿冷静一下，顺便买点自卫和登山的装备以防万一。"
-];
-
-/* ---------- 工具：格式化当前时间为 HH:MM ---------- */
-function fmtTime(idx=0){
-    const baseHour = 21;
-    const baseMinute = 30;
-    const minuteOffset = Math.floor(idx / 3); // 每三条消息+1分钟
-    const totalMinutes = baseMinute + minuteOffset;
-    const hh = String(baseHour + Math.floor(totalMinutes / 60)).padStart(2,'0');
-    const mm = String(totalMinutes % 60).padStart(2,'0');
-    return `${hh}:${mm}`;
-}
-
-
-
-/* ---------- 将一条消息追加到聊天区 ---------- */
-function appendMessage(msg, opts={}){
-  const el = document.createElement('div');
-  el.className = 'msg ' + (msg.side === 'system' ? 'system' : msg.side);
-
-  if(msg.side !== 'system'){
-    const t = document.createElement('div');
-    t.className = 'time';
-    t.textContent = msg.time || fmtTime();
-    el.appendChild(t);
-  }
-
-  const text = document.createElement('div');
-  text.textContent = msg.text;
-  el.appendChild(text);
-
-  // 若为玩家发送（right），可附加状态占位
-  if(msg.side === 'right'){
-    const status = document.createElement('div');
-    status.className = 'status';
-    status.textContent = '发送中...';
-    status.style.opacity = '0';
-    status.style.transition = 'opacity .18s';
-    el.appendChild(status);
-    // 动画显示
-    setTimeout(()=> status.style.opacity = '1', 20);
-  }
-
-  chatBody.appendChild(el);
-  chatBody.scrollTop = chatBody.scrollHeight;
-  return el;
-}
-
-/* ---------- 发送玩家碎句（逐条） ---------- */
-function startPanicMessaging(){
-  let idx = 0; // 全局消息计数，用于时间递增
-
-  function sendNextPlayer(){
-    if(idx >= playerPanicMessages.length){
-      setTimeout(startXiaoxuReplies, 800);
-      return;
-    }
-    const text = playerPanicMessages[idx];
-    const msg = { time: fmtTime(idx), sender: '玩具熊', text, side:'right' };
-    const el = appendMessage(msg);
-    const statusEl = el.querySelector('.status');
-    setTimeout(()=> {
-      if(statusEl) statusEl.textContent = '已送达';
-      idx++;
-      setTimeout(sendNextPlayer, 800);
-    }, 600);
-  }
-
-  function startXiaoxuReplies(){
-    const typingEl = document.createElement('div');
-    typingEl.className = 'typing';
-    typingEl.textContent = '小徐：正在输入···';
-    chatBody.appendChild(typingEl);
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    setTimeout(()=>{
-      chatBody.removeChild(typingEl);
-
-      let j = 0;
-      function pushReply(){
-        if(j >= xiaoxuReplies.length) return;
-        const reply = { time: fmtTime(idx), sender:'小徐', text: xiaoxuReplies[j], side:'left' };
-        appendMessage(reply);
-        idx++;
-        j++;
-        setTimeout(pushReply, 900);
-      }
-      pushReply();
-    }, 2000); // 小徐模拟输入 2 秒
-  }
-
-  sendNextPlayer();
-}
-
-
-/* ---------- 显示“小徐 正在输入...”然后显示回复序列 ---------- */
-function showTypingThenReplies(){
-  // 添加typing indicator
-  const typingEl = document.createElement('div');
-  typingEl.className = 'typing';
-  typingEl.textContent = '小徐：正在输入···';
-  chatBody.appendChild(typingEl);
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  // 假设 3 秒后开始显示回复
-  setTimeout(()=> {
-    typingEl.textContent = '小徐：';
-    // 移除 typingEl and start appending replies with small delay
-    chatBody.removeChild(typingEl);
-
-    let j = 0;
-    function pushReply(){
-      if(j >= xiaoxuReplies.length) return;
-      const reply = { time: fmtTime(), sender:'小徐', text: xiaoxuReplies[j], side:'left' };
-      appendMessage(reply);
-      j++;
-      setTimeout(pushReply, 900);
-    }
-    pushReply();
-  }, 3000);
-}
-
-
-/* ---------- 小提示：点击左侧好友可以切换（保留占位） ---------- */
-document.querySelectorAll('.friend').forEach(f=>{
-  f.addEventListener('click', ()=>{
-    const name = f.textContent.trim();
-    if (name !== '小徐') return; // 🚫 其他好友直接无效
-
-    // ✅ 只有小徐能进入聊天
-    document.querySelectorAll('.friend').forEach(ff=>ff.classList.remove('active'));
-    f.classList.add('active');
-    document.getElementById('chat-header').textContent = name;
-    chatBody.innerHTML = '';
-    appendMessage({time:fmtTime(), sender:'system', text:'你已进入与 小徐 的聊天。', side:'system'});
-    startPanicMessaging(); // 启动剧情聊天
-  });
-});
-
-
-
-/* ---------- 保证滚动到底部时自动滚动 ---------- */
-const observer = new MutationObserver(()=> chatBody.scrollTop = chatBody.scrollHeight);
-observer.observe(chatBody, {childList:true, subtree:true});
-
-</script>
-
-<!-- 右下角邮件弹窗预览 -->
-<div id="email-preview">
-  <strong>新邮件</strong> — 来自：service@baoya-health.com<br>
-  <em>主题：重要通知：宝亚保健有限公司财务异常 — 请立即查看！</em><br>
-  <span>预览：宝亚保健有限公司因资金链断裂，现已宣布破产……</span>
-</div>
-
-<!-- 邮件完整内容弹窗 -->
+<!-- 邮件完整内容 -->
 <div id="email-full">
   <h3>关于宝亚保健有限公司运营调整与VIP服务说明（紧急）</h3>
-  <p>发件人：service@baoya-health.com<br>
-  收件人：[收件人邮箱]</p>
+  <p>发件人：service@baoya-health.com<br>收件人：[收件人邮箱]</p>
   <p>各位尊敬的VIP会员：</p>
   <p>您好！首先感谢您一直以来对宝亚保健的支持与信任。我们在此向您通报一则紧急事务。</p>
   <p>由于近期公司遭遇不可逆的资金链断裂，宝亚保健有限公司已无法维持目前运营规模，现阶段公司财务处于极度困难状态。为了保护广大会员的基本权益并尽快进行善后处置，公司决定立即暂停所有线下活动与VIP服务，并启动会员权益保护程序。</p>
@@ -392,145 +86,119 @@ observer.observe(chatBody, {childList:true, subtree:true});
   </ul>
   <p>在此特殊时期，给您带来的不便我们深表歉意，感谢您的理解与配合。</p>
   <p>宝亚保健有限公司<br>客户服务部-小徐</p>
-
   <button onclick="closeEmail()">关闭</button>
 </div>
 
-<style>
-/* 邮件预览弹窗 */
-/* 邮件预览 */
-#email-preview {
-  display: none;
-  position: fixed;
-  right: 5%;
-  bottom: 50px;
-  width: 90%;        /* 宽度自适应屏幕 */
-  max-width: 400px;  /* 最大宽度 */
-  background: #fff;
-  border: 2px solid #3c2814;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  z-index: 10000;
-}
-
-/* 邮件完整内容 */
-#email-full {
-  display: none;
-  position: fixed;
-  right: 5%;
-  bottom: 50px;
-  width: 90%;          /* 宽度自适应屏幕 */
-  max-width: 480px;     /* 最大宽度 */
-  max-height: 80vh;     /* 高度限制 */
-  overflow-y: auto;     /* 内容超出可滚动 */
-  background: #fff;
-  border: 2px solid #3c2814;
-  border-radius: 8px;
-  padding: 16px;
-  font-size: 14px;
-  z-index: 10001;
-}
-
-/* 手机屏幕优化 */
-@media screen and (max-width: 480px) {
-  #email-preview, #email-full {
-    width: 90%;           /* 宽度占屏幕90% */
-    right: 5%;            /* 保证左右边距 */
-    bottom: 50px;         /* 底部距离 */
-    font-size: 13px;      /* 字号略小 */
-  }
-}
-
-
-</style>
-
-
-
 <script>
-const emailPreview = document.getElementById('email-preview');
+const chatBody = document.getElementById('chat-body');
 const emailFull = document.getElementById('email-full');
 
-// 3秒后自动显示邮件预览
-setTimeout(()=>{
-  emailPreview.style.display = 'block';
-}, 27000); // 
+/* 玩家消息 */
+const playerPanicMessages = [
+  "我妈妈不见了！",
+  "一定是那个 VIP 游的事，我看到她邮箱里的邮件了。",
+  "为什么她不跟我打个招呼啊？",
+  "对不起，我还是没能拦下她……",
+  "我要去雾山。你能给我个具体地图吗？",
+  "王老板一定是要干最后一票，他没什么好失去的了，我要去阻止他！"
+];
 
-// 点击预览展开完整邮件
-emailPreview.addEventListener('click', ()=>{
-  emailPreview.style.display = 'none';
-  emailFull.style.display = 'block';
-});
+/* 小徐回复 */
+const xiaoxuReplies = [
+  "天呐！你不要着急！",
+  "雾山那边路况非常不好，很难进出，你千万别冲动啊！",
+  "你走之前得带点装备啊，别莽！",
+  "……",
+  "算了，我跟你一起去。",
+  "你千万不要轻举妄动！",
+  "你先别急，我们要把那些参加 VIP 的老人都找到，对吗？",
+  "说实话，我和小田、小骏在制作一个钓鱼的官方页面，快做完了，你先别慌。",
+  "我们的想法是先通过假官网和一个假官方邮箱，让大家先退出 VIP，然后通知他们家属。",
+  "等我们把这些都做好了，再去雾山救人。",
+  "我们估计还要半个小时，你趁这会儿冷静一下，顺便买点自卫和登山的装备以防万一。"
+];
 
-// 点击关闭邮件时调用
-function closeEmail(){
-    emailFull.style.display = 'none';
 
-    // 延迟 2 秒追加邮件关闭消息
-    setTimeout(()=>{
-        appendEmailCloseMessages();
-    }, 2000);
+/* 添加消息 */
+function appendMessage(msg){
+  const el = document.createElement('div');
+  el.className = 'msg ' + (msg.side||'left');
+  const t = document.createElement('div');
+  t.className='time';
+  t.textContent = msg.time||fmtTime(0);
+  el.appendChild(t);
+  const text = document.createElement('div');
+  text.textContent = msg.text;
+  el.appendChild(text);
+  chatBody.appendChild(el);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+/* 时间格式：每分钟三条消息 */
+function fmtTime(idx){
+    const baseHour = 21;
+    const baseMinute = 30;
+    const minuteOffset = Math.floor(idx / 3); // 每三条消息 +1分钟
+    const totalMinutes = baseMinute + minuteOffset;
+    const hh = String(baseHour + Math.floor(totalMinutes / 60)).padStart(2,'0');
+    const mm = String(totalMinutes % 60).padStart(2,'0');
+    return `${hh}:${mm}`;
 }
 
-// 追加邮件关闭后的两条消息
-function appendEmailCloseMessages(){
-    let emailIdx = 0;
-
-    const messages = [
-        { sender:'小徐', text:'我们这边好了。', side:'left' },
-        { sender:'玩具熊', text:'我也准备好了。', side:'right' }
-    ];
-
+/* 自动播放剧情 */
+/* 自动播放剧情 + 邮件 + 下一章按钮 */
+function playStory(){
+    let idx = 0;
     function sendNext(){
-        if(emailIdx >= messages.length) {
-            // 两秒后显示“下一张”按钮
-            setTimeout(showNextWushanButton, 2000);
+        if(idx < playerPanicMessages.length){
+            appendMessage({time:fmtTime(idx), text:playerPanicMessages[idx], side:'right'});
+        } else if(idx - playerPanicMessages.length < xiaoxuReplies.length){
+            let repIdx = idx - playerPanicMessages.length;
+            appendMessage({time:fmtTime(idx), text:xiaoxuReplies[repIdx], side:'left'});
+        } else {
+            // 延迟3秒显示邮件
+            setTimeout(()=>{
+                emailFull.style.display='block';
+            }, 3000);
             return;
         }
-
-        const msgData = messages[emailIdx];
-        const hh = 22;
-        const mm = 11 + Math.floor(emailIdx / 3);
-        const timeStr = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-
-        appendMessage({ time: timeStr, ...msgData });
-        emailIdx++;
-        setTimeout(sendNext, 500);
+        idx++;
+        setTimeout(sendNext, 1200);
     }
-
     sendNext();
 }
 
-// 显示居中“下一张：WUSHAN”按钮
-// 显示居中“下一章：WUSHAN”按钮
+/* 邮件关闭后追加两条消息并显示下一章按钮 */
+function closeEmail(){
+    emailFull.style.display='none';
+    setTimeout(()=>{
+        appendMessage({time:'22:12', text:'我们这边好了。', side:'left'});
+        appendMessage({time:'22:13', text:'我也准备好了。', side:'right'});
+        showNextWushanButton();
+    }, 800);
+}
+
+/* 创建“下一章：WUSHAN”按钮 */
 function showNextWushanButton(){
+    if(document.querySelector('.glow-button.next-chapter')) return; // 防重复
     const btn = document.createElement('button');
     btn.textContent = '下一章：WUSHAN';
-    btn.className = 'glow-button';
+    btn.className = 'glow-button next-chapter';
     btn.style.position = 'absolute';
     btn.style.left = '50%';
     btn.style.top = '50%';
     btn.style.transform = 'translate(-50%, -50%)';
     btn.style.zIndex = 9999;
-    
-    // 放大尺寸
     btn.style.padding = '16px 32px';
     btn.style.fontSize = '1.4em';
     btn.style.boxShadow = '0 0 24px rgba(255,255,255,0.95), 0 0 48px rgba(255,255,255,0.7)';
-    
-  btn.onclick = ()=> {
-    window.location.href = '6wushan.html';
-};
-
+    btn.onclick = ()=> window.location.href='6wushan.html';
     document.body.appendChild(btn);
 }
 
 
+/* 启动剧情 */
+window.addEventListener('DOMContentLoaded', playStory);
 </script>
-
-
 
 </body>
 </html>
