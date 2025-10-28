@@ -155,6 +155,17 @@ setTimeout(() => {
     document.getElementById('fadeScreen').classList.add('show');
 }, 18000);
 
+// 21.5 秒时淡出底部状态栏
+setTimeout(() => {
+    const statusBar = document.getElementById('status-bar');
+    if (statusBar) {
+        statusBar.style.transition = 'opacity 2s ease';
+        statusBar.style.opacity = '0';
+        setTimeout(() => statusBar.style.display = 'none', 2000);
+    }
+}, 18000);
+
+
 // 22 秒后开始显示感谢文字
 setTimeout(() => {
     const line1 = "感谢游玩";
