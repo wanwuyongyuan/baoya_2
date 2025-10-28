@@ -33,20 +33,6 @@ body {
   min-height: 400px;
 }
 
-#key {
-  display: inline-block;
-  padding: 10px 20px;
-  color: #edcb77;
-  border: 1px solid rgba(237,203,119,0.5);
-  border-radius: 6px;
-  cursor: grab;
-  background: rgba(60, 47, 26, 0.3);
-  transition: transform 0.2s;
-}
-#key:active {
-  cursor: grabbing;
-  transform: scale(1.1);
-}
 
 #lockhole {
   width: 100px;
@@ -108,7 +94,9 @@ body {
 
 <div class="story" id="story">
   <p>那串钥匙在我的掌心。</p>
-  <p>我抬起手中的<span id="key" draggable="true">钥匙</span>。</p>
+ <p>我抬起手中的
+  <img id="key" src="9_Piskel.png" draggable="true" alt="钥匙" style="width:90px; cursor:grab; border-radius:6px; transition:transform 0.2s;">
+</p>
   <p>（将钥匙放入门锁）</p>
 </div>
 
@@ -215,6 +203,10 @@ lockhole.addEventListener('drop', e => {
     }, 500); // 开锁淡出时间
   }
 });
+
+key.addEventListener('mousedown', () => key.style.transform = 'scale(1.1)');
+key.addEventListener('mouseup', () => key.style.transform = 'scale(1)');
+
 </script>
 
 </body>
