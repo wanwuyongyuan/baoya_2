@@ -350,14 +350,20 @@ function showTypingThenReplies(){
 /* ---------- 小提示：点击左侧好友可以切换（保留占位） ---------- */
 document.querySelectorAll('.friend').forEach(f=>{
   f.addEventListener('click', ()=>{
+    const name = f.textContent.trim();
+    if (name !== '小徐') return; // 🚫 其他好友直接无效
+
+    // ✅ 只有小徐能进入聊天
     document.querySelectorAll('.friend').forEach(ff=>ff.classList.remove('active'));
     f.classList.add('active');
-    document.getElementById('chat-header').textContent = f.textContent;
-    // 简单切换：清空并显示系统提示
+    document.getElementById('chat-header').textContent = name;
     chatBody.innerHTML = '';
-    appendMessage({time:fmtTime(), sender:'system', text:`你已切换到 ${f.textContent}`, side:'system'});
+    appendMessage({time:fmtTime(), sender:'system', text:'你已进入与 小徐 的聊天。', side:'system'});
+    startPanicMessaging(); // 启动剧情聊天
   });
 });
+
+
 
 /* ---------- 保证滚动到底部时自动滚动 ---------- */
 const observer = new MutationObserver(()=> chatBody.scrollTop = chatBody.scrollHeight);
