@@ -256,5 +256,61 @@ document.addEventListener('touchmove',(e)=>{
   }
 });
 </script>
+
+<!-- 跳过按钮（左下角） -->
+<!-- 跳过按钮（左下角） -->
+<button id="skip-btn">跳过</button>
+
+<style>
+#skip-btn {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  background: rgba(255,255,255,0.85);
+  color: #0b2340;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 20000;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  transition: all .2s ease;
+}
+#skip-btn:hover {
+  background: #fff;
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+</style>
+
+<script>
+const skipBtn = document.getElementById('skip-btn');
+
+skipBtn.addEventListener('click', ()=>{
+  // 清空对话区
+  chatBody.innerHTML = '';
+
+  // 一次性把玩家与小徐的对话全显示出来
+  for (let i = 0; i < playerPanicMessages.length; i++) {
+    appendMessage({time: fmtTime(i), sender: '玩具熊', text: playerPanicMessages[i], side: 'right'});
+  }
+  for (let j = 0; j < xiaoxuReplies.length; j++) {
+    appendMessage({time: fmtTime(playerPanicMessages.length + j), sender: '小徐', text: xiaoxuReplies[j], side: 'left'});
+  }
+
+  // 同时让时间线自动滚到最底部
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // 显示“下一章”按钮
+  showNextWushanButton();
+
+  // 跳过按钮消失
+  skipBtn.style.display = 'none';
+});
+</script>
+
+
 </body>
+
+
 </html>
