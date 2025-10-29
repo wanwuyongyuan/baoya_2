@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>彩蛋小游戏</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: #faf5e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #3c2814;
+}
+
+#container {
+  background: #fff;
+  border: 2px solid #3c2814;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+}
+
+button {
+  background: #d8b77a;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  margin-top: 10px;
+}
+button:hover {
+  background: #caa666;
+}
+
+#target {
+  display: none;
+  margin: 20px auto;
+  background: #d8b77a;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#message {
+  margin-top: 10px;
+  min-height: 24px;
+  font-size: 15px;
+}
+</style>
+</head>
+<body>
+
+<div id="container">
+  <h2>🎉 恭喜你发现彩蛋！</h2>
+  <p>玩一下小游戏，休息一下吧～</p>
+  <button id="start-btn">开始游戏</button>
+  <div id="target">点我</div>
+  <div id="message"></div>
+</div>
+
+<script>
+let startTime = 0;
+let timer = null;
+
+const startBtn = document.getElementById('start-btn');
+const target = document.getElementById('target');
+const message = document.getElementById('message');
+
+startBtn.onclick = function() {
+  message.textContent = "请等待圆圈出现...";
+  startBtn.disabled = true;
+  target.style.display = "none";
+
+  // 随机延迟出现（1~3秒）
+  const delay = Math.random() * 2000 + 1000;
+  timer = setTimeout(() => {
+    target.style.display = "block";
+    message.textContent = "快点点击圆圈！";
+    startTime = Date.now();
+  }, delay);
+};
+
+target.onclick = function() {
+  const reactionTime = Date.now() - startTime;
+  target.style.display = "none";
+  clearTimeout(timer);
+  startBtn.disabled = false;
+
+  if (reactionTime < 200) {
+    message.textContent = `⚡ 反应神速！只用了 ${reactionTime} 毫秒！`;
+  } else if (reactionTime < 400) {
+    message.textContent = `👏 很棒！你的反应时间是 ${reactionTime} 毫秒。`;
+  } else {
+    message.textContent = `😴 有点慢哦～用了 ${reactionTime} 毫秒。`;
+  }
+};
+</script>
+
+</body>
+</html>

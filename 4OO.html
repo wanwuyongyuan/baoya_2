@@ -53,10 +53,9 @@
   #slider{ width:80%; height:20px; background:#3399ff; margin:12px auto; border-radius:10px; position:relative; cursor:pointer; }
   #slider-handle{ width:20px; height:20px; background:#fff; position:absolute; left:0; top:0; border-radius:50%; touch-action:none; }
 
-  /* 发光按钮 */
   .glow-button {
     display: inline-block;
-    margin: 18px auto 0 auto;
+    margin: 60px auto 0 auto; /* 提高按钮位置，原18px -> 60px */
     padding: 10px 22px;
     background: #ffffff;
     color: #0b2340;
@@ -70,6 +69,15 @@
     display: block; text-align:center;
   }
   .glow-button:hover { transform: translateY(-3px); box-shadow: 0 0 24px rgba(255,255,255,1), 0 0 60px rgba(255,255,255,0.8); }
+
+  /* 修复在手机端点击不到 */
+  #next-page-btn-container { 
+    text-align:center; 
+    margin:40px 0; 
+    padding-bottom:80px; /* 增加底部留白，防止遮挡 */
+  }
+
+  #skip-btn { display:none !important; } /* 禁用跳过按钮 */
 </style>
 </head>
 <body>
@@ -93,7 +101,7 @@
     <div id="slider-msg"></div>
   </div>
 
-  <div id="next-page-btn-container" style="text-align:center; margin:20px 0;"></div>
+  <div id="next-page-btn-container"></div>
 </div>
 
 <script>
@@ -105,139 +113,126 @@ const sliderMsg = document.getElementById('slider-msg');
 const nextBtnContainer = document.getElementById('next-page-btn-container');
 
 const messages = [
-{time:"07:41", sender:"system", text:"您已成功添加新朋友【小徐】", side:"system"},
-{time:"07:42", sender:"小徐", text:"早啊，你醒了吗？", side:"left"},
-{time:"07:42", sender:"玩具熊", text:"早，刚起。", side:"right"},
-{time:"07:44", sender:"小徐", text:"看你发帖时间是凌晨，昨晚睡得怎么样？", side:"left"},
-{time:"07:44", sender:"玩具熊", text:"还好吧，你呢？", side:"right"},
-{time:"07:44", sender:"小徐", text:"我也差不多，困得不行", side:"left"},
-{time:"07:46", sender:"小徐", text:"我跟你说说宝亚保健的事吧", side:"left"},
-{time:"07:46", sender:"小徐", text:"我是之前的员工，之前在论坛帖子里也已经自证了", side:"left"},
-{time:"07:46", sender:"玩具熊", text:"嗯，谢谢", side:"right"},
-{time:"07:48", sender:"小徐", text:"王老板挺疯狂的，真的", side:"left"},
-{time:"07:48", sender:"小徐", text:"公司做到顶了，也赚不到钱", side:"left"},
-{time:"07:48", sender:"小徐", text:"据说他女儿最近也生病了，还有个孩子即将出生，现在急需钱", side:"left"},
-{time:"07:51", sender:"玩具熊", text:"……", side:"right"},
-{time:"07:53", sender:"小徐", text:"其实有些事我也是听别人说的，但大体意思不会错", side:"left"},
-{time:"07:53", sender:"小徐", text:"一开始王老板祭牛祭羊，在邪神面前祈求好运", side:"left"},
-{time:"07:53", sender:"小徐", text:"后来他慢慢发现不管用了，献祭人的阳寿更好", side:"left"},
-{time:"07:53", sender:"小徐", text:"你也知道，他是保健公司的老板，老年人就是他手里的资源", side:"left"},
-{time:"07:54", sender:"小徐", text:"老年人很容易骗", side:"left"},
-{time:"07:54", sender:"小徐", text:"他抓这个机会下手……真的，让人心里发冷", side:"left"},
-{time:"07:54", sender:"system", text:"网络卡顿", side:"system"},
-{time:"07:54", sender:"system", text:"网络异常，需要验证你不是机器人才能继续聊天", side:"system"},
-{time:"07:55", sender:"小徐", text:"公司以前组织过 VIP 游", side:"left"},
-{time:"07:55", sender:"小徐", text:"表面上是带他们去旅游，吃喝玩乐", side:"left"},
-{time:"07:55", sender:"小徐", text:"其实都是为了那些献祭的安排", side:"left"},
-{time:"07:55", sender:"玩具熊", text:"居然是因为这个才会有 VIP 游……我懂了", side:"right"},
-{time:"07:55", sender:"玩具熊", text:"我妈也是", side:"right"},
-{time:"07:55", sender:"玩具熊", text:"虽然她不算很老，但我爸不常在她身边，我也去上学，不常在她身边，她缺少陪伴", side:"right"},
-{time:"07:55", sender:"玩具熊", text:"容易被推销的人说动", side:"right"},
-{time:"07:58", sender:"小徐", text:"所以你一直担心她吧", side:"left"},
-{time:"07:58", sender:"玩具熊", text:"是啊", side:"right"},
-{time:"07:58", sender:"玩具熊", text:"看她被骗，我心里一直堵着", side:"right"},
-{time:"08:01", sender:"小徐", text:"你挺勇敢的，谢谢你发帖子", side:"left"},
-{time:"08:01", sender:"小徐", text:"真的，尤其现在王老板越狱出来了……", side:"left"},
-{time:"08:01", sender:"小徐", text:"要不我们见面聊聊吧，有些事情不好在网络上说", side:"left"},
-{time:"08:04", sender:"玩具熊", text:"啊……", side:"right"},
-{time:"08:04", sender:"玩具熊", text:"可能不太行", side:"right"},
-{time:"08:04", sender:"玩具熊", text:"抱歉，最近学校事情很多", side:"right"},
-{time:"08:05", sender:"小徐", text:"也行，再说吧", side:"left"}
+  {time:"07:41", sender:"system", text:"您已成功添加新朋友【小徐】", side:"system"},
+  {time:"07:42", sender:"小徐", text:"早啊，你醒了吗？", side:"left"},
+  {time:"07:42", sender:"玩具熊", text:"早，刚起。", side:"right"},
+  {time:"07:44", sender:"小徐", text:"看你发帖时间是凌晨，昨晚睡得怎么样？", side:"left"},
+  {time:"07:44", sender:"玩具熊", text:"还好吧，你呢？", side:"right"},
+  {time:"07:44", sender:"小徐", text:"我也差不多，困得不行", side:"left"},
+  {time:"07:46", sender:"小徐", text:"我跟你说说宝亚保健的事吧", side:"left"},
+  {time:"07:46", sender:"小徐", text:"我是之前的员工，之前在论坛帖子里也已经自证了", side:"left"},
+  {time:"07:46", sender:"玩具熊", text:"嗯，谢谢", side:"right"},
+  {time:"07:48", sender:"小徐", text:"王老板挺疯狂的，真的", side:"left"},
+  {time:"07:48", sender:"小徐", text:"公司做到顶了，也赚不到钱", side:"left"},
+  {time:"07:48", sender:"小徐", text:"据说他女儿最近也生病了，还有个孩子即将出生，现在急需钱", side:"left"},
+  {time:"07:51", sender:"玩具熊", text:"……", side:"right"},
+  {time:"07:53", sender:"小徐", text:"其实有些事我也是听别人说的，但大体意思不会错", side:"left"},
+  {time:"07:53", sender:"小徐", text:"一开始王老板祭牛祭羊，在邪神面前祈求好运", side:"left"},
+  {time:"07:53", sender:"小徐", text:"后来他慢慢发现不管用了，献祭人的阳寿更好", side:"left"},
+  {time:"07:53", sender:"小徐", text:"你也知道，他是保健公司的老板，老年人就是他手里的资源", side:"left"},
+  {time:"07:54", sender:"小徐", text:"老年人很容易骗", side:"left"},
+  {time:"07:54", sender:"小徐", text:"他抓这个机会下手……真的，让人心里发冷", side:"left"},
+  {time:"07:54", sender:"system", text:"网络卡顿", side:"system"},
+  {time:"07:54", sender:"system", text:"网络异常，需要验证你不是机器人才能继续聊天", side:"system"},
+  {time:"07:55", sender:"小徐", text:"公司以前组织过 VIP 游", side:"left"},
+  {time:"07:55", sender:"小徐", text:"表面上是带他们去旅游，吃喝玩乐", side:"left"},
+  {time:"07:55", sender:"小徐", text:"其实都是为了那些献祭的安排", side:"left"},
+  {time:"07:55", sender:"玩具熊", text:"居然是因为这个才会有 VIP 游……我懂了", side:"right"},
+  {time:"07:55", sender:"玩具熊", text:"我妈也是", side:"right"},
+  {time:"07:55", sender:"玩具熊", text:"虽然她不算很老，但我爸不常在她身边，我也去上学，不常在她身边，她缺少陪伴", side:"right"},
+  {time:"07:55", sender:"玩具熊", text:"容易被推销的人说动", side:"right"},
+  {time:"07:58", sender:"小徐", text:"所以你一直担心她吧", side:"left"},
+  {time:"07:58", sender:"玩具熊", text:"是啊", side:"right"},
+  {time:"07:58", sender:"玩具熊", text:"看她被骗，我心里一直堵着", side:"right"},
+  {time:"08:01", sender:"小徐", text:"你挺勇敢的，谢谢你发帖子", side:"left"},
+  {time:"08:01", sender:"小徐", text:"真的，尤其现在王老板越狱出来了……", side:"left"},
+  {time:"08:01", sender:"小徐", text:"要不我们见面聊聊吧，有些事情不好在网络上说", side:"left"},
+  {time:"08:04", sender:"玩具熊", text:"啊……", side:"right"},
+  {time:"08:04", sender:"玩具熊", text:"可能不太行", side:"right"},
+  {time:"08:04", sender:"玩具熊", text:"抱歉，最近学校事情很多", side:"right"},
+  {time:"08:05", sender:"小徐", text:"也行，再说吧", side:"left"}
 ];
 
 let i=0, blocked=false;
 
 function displayMsg(msg){
-  const p = document.createElement('div');
-  p.className = 'msg ' + (msg.side==='system'? 'system': msg.side);
+  const p=document.createElement('div');
+  p.className='msg '+(msg.side==='system'?'system':msg.side);
 
   if(msg.side!=='system'){
-    const t = document.createElement('div');
+    const t=document.createElement('div');
     t.className='time';
-    t.textContent = msg.time;
+    t.textContent=msg.time;
     p.appendChild(t);
   }
 
-  const text = document.createElement('div');
-  text.textContent = msg.text;
+  const text=document.createElement('div');
+  text.textContent=msg.text;
   p.appendChild(text);
 
-  // ✅ 在这里加上“已送达”
-  if(msg.side==='right'){   // 只有自己发的才显示
-    const status = document.createElement('div');
-    status.className = 'status';
-    status.textContent = '已送达';
-    status.style.fontSize = '11px';
-    status.style.color = 'rgba(255,255,255,0.8)';
-    status.style.textAlign = 'right';
-    status.style.marginTop = '2px';
+  if(msg.side==='right'){
+    const status=document.createElement('div');
+    status.textContent='已送达';
+    status.style.fontSize='11px';
+    status.style.color='rgba(255,255,255,0.8)';
+    status.style.textAlign='right';
+    status.style.marginTop='2px';
     p.appendChild(status);
   }
 
   chatBody.appendChild(p);
-  chatBody.scrollTop = chatBody.scrollHeight;
+  chatBody.scrollTop=chatBody.scrollHeight;
 }
 
+function showNextButton(){
+  if(document.querySelector('.glow-button')) return; // 防止重复出现
+  const btn=document.createElement('button');
+  btn.className='glow-button';
+  btn.textContent='下一章：NIGHTMARE';
+  btn.onclick=()=>{window.location.href='5mom.html';};
+  nextBtnContainer.appendChild(btn);
+}
 
 function nextMsg(){
-  if(i>=messages.length) {
-    // 最后一条消息后显示发光按钮
-    const btn = document.createElement('button');
-    btn.className = 'glow-button';
-    btn.textContent = '下一章：NIGHTMARE';
-    btn.onclick = ()=>{ window.location.href='5mom.html'; }
-    nextBtnContainer.appendChild(btn);
-    return;
+  if(i>=messages.length){ 
+    showNextButton(); 
+    return; 
   }
-  const msg = messages[i];
+  const msg=messages[i];
   if(blocked) return;
-  if(msg.side==='system' && msg.text.includes('验证')) {
-    blocked = true;
+  displayMsg(msg);
+
+  if(msg.side==='system' && msg.text.includes('验证')){
+    blocked=true;
     sliderContainer.style.display='block';
   }
-  displayMsg(msg);
+
   i++;
-  setTimeout(nextMsg, 1200);
+  setTimeout(nextMsg,1200);
 }
 
 nextMsg();
 
-// 滑块验证
+// 滑块验证逻辑
 let dragging=false;
 handle.addEventListener('mousedown',()=>{dragging=true});
 handle.addEventListener('touchstart',()=>{dragging=true});
-document.addEventListener('mouseup',()=>{
-  if(dragging){
-    dragging=false;
-    if(parseInt(handle.style.left) >= slider.offsetWidth-22){
-      sliderMsg.textContent="验证成功！网络恢复。网络密码：112233";
-      setTimeout(()=>{
-        sliderContainer.style.display='none';
-        blocked=false;
-        nextMsg();
-      },2000);
-    }else{
-      handle.style.left='0px';
-      sliderMsg.textContent="";
-    }
+function finishCheck(){
+  dragging=false;
+  if(parseInt(handle.style.left)>=slider.offsetWidth-22){
+    sliderMsg.textContent="验证成功！网络恢复。网络密码：112233";
+    setTimeout(()=>{
+      sliderContainer.style.display='none';
+      blocked=false;
+      nextMsg();
+    },1500);
+  }else{
+    handle.style.left='0px';
+    sliderMsg.textContent="";
   }
-});
-document.addEventListener('touchend',()=>{
-  if(dragging){
-    dragging=false;
-    if(parseInt(handle.style.left) >= slider.offsetWidth-22){
-      sliderMsg.textContent="验证成功！网络恢复。网络密码：112233";
-      setTimeout(()=>{
-        sliderContainer.style.display='none';
-        blocked=false;
-        nextMsg();
-      },2000);
-    }else{
-      handle.style.left='0px';
-      sliderMsg.textContent="";
-    }
-  }
-});
+}
+document.addEventListener('mouseup',finishCheck);
+document.addEventListener('touchend',finishCheck);
 document.addEventListener('mousemove',(e)=>{
   if(dragging){
     const rect=slider.getBoundingClientRect();
@@ -257,60 +252,17 @@ document.addEventListener('touchmove',(e)=>{
 });
 </script>
 
-<!-- 跳过按钮（左下角） -->
-<!-- 跳过按钮（左下角） -->
-<button id="skip-btn">跳过</button>
-
-<style>
-#skip-btn {
-  position: fixed;
-  left: 18px;
-  bottom: 18px;
-  background: rgba(255,255,255,0.85);
-  color: #0b2340;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  z-index: 20000;
-  box-shadow: 0 0 8px rgba(0,0,0,0.2);
-  transition: all .2s ease;
-}
-#skip-btn:hover {
-  background: #fff;
-  box-shadow: 0 0 12px rgba(0,0,0,0.3);
-}
-</style>
-
 <script>
-const skipBtn = document.getElementById('skip-btn');
-
-skipBtn.addEventListener('click', ()=>{
-  // 清空对话区
-  chatBody.innerHTML = '';
-
-  // 一次性把玩家与小徐的对话全显示出来
-  for (let i = 0; i < playerPanicMessages.length; i++) {
-    appendMessage({time: fmtTime(i), sender: '玩具熊', text: playerPanicMessages[i], side: 'right'});
+// 点击“万物永远”跳转
+document.querySelectorAll('.friend').forEach(f => {
+  if (f.textContent.trim() === '万物永远') {
+    f.addEventListener('click', () => {
+      window.location.href = 'caidan.html';
+    });
   }
-  for (let j = 0; j < xiaoxuReplies.length; j++) {
-    appendMessage({time: fmtTime(playerPanicMessages.length + j), sender: '小徐', text: xiaoxuReplies[j], side: 'left'});
-  }
-
-  // 同时让时间线自动滚到最底部
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  // 显示“下一章”按钮
-  showNextWushanButton();
-
-  // 跳过按钮消失
-  skipBtn.style.display = 'none';
 });
 </script>
 
 
 </body>
-
-
 </html>

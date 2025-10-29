@@ -196,6 +196,18 @@ body {
   cursor:pointer;
   border-radius:6px;
 }
+
+/* 手机端优化：查看桌面照片缩小并略微下移 */
+@media screen and (max-width: 600px) {
+  #photo {
+    width: 100px;          /* 缩小按钮宽度 */
+    height: 32px;          /* 缩小高度 */
+    font-size: 14px;       /* 字体稍小 */
+    bottom: 30px;          /* 往下移（原来是60px） */
+    left: 30px;            /* 保持稍微靠左 */
+  }
+}
+
 </style>
 </head>
 <body>
@@ -236,7 +248,7 @@ const popupText = document.getElementById('popup-text');
 
 // 桌面图标跳转
 document.getElementById('photo').onclick = function(){
-  openPopup('一张少女和母亲的合照，背景温柔，但照片里没有父亲的身影。');
+  openPopup('一张少女和母亲的合照，她们笑得十分温柔。照片里没有父亲的身影。');
 };
 document.getElementById('oo').onclick = function() { window.location.href = '5OO.html'; };
 // document.getElementById('forum').onclick = function(){ window.location.href = '3luntan.html'; };
